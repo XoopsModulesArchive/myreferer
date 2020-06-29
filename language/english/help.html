@@ -1,0 +1,91 @@
+<style type="text/css">
+div.xoopsCode {
+	color: #000000;
+    background: #F0F0F0;
+    font-weight: normal;
+    border: 1px inset #000080;
+    font-family: "Courier New",Courier,monospace;
+    margin : 2px 0px 0px 20px;
+    padding: 2px 5px 2px 5px;
+	width: 600px;
+	height: auto;
+	overflow: none;
+    text-align: left;
+}
+</style>
+
+<div align="left">
+<h1 align='center'>Informations about myReferer</h1>
+<br>
+This module will gather all informations regarding your referers from external websites and search engines. It will help you track down used keywords and web crawlers.
+<br /><br />
+For more informations, read the following explanations
+<br />
+<ul><li><a href='#q1'>1) Installation</a></li>
+<li><a href='#q2'>2) Referers</a></li>
+<li><a href='#q3'>3) Search Engine</a></li>
+<li><a href='#q4'>4) Keywords</a></li>
+<li><a href='#q5'>5) Web Crawlers</a></li>
+</ul>
+<br />
+<hr/>
+<a id='q1' name='q1'><h2>1) Installation</h2></a>
+Follow the next steps to properly install the module:
+<ol>
+<li>1) Edit the 'header.php' file at the Xoops root directory.</li>
+<li>2) Insert the code as indicated below : <br />
+<div align='center'>
+<div class="xoopsCode"><pre>
+if (!defined("XOOPS_ROOT_PATH")) {
+    die("XOOPS root path not defined");
+}
+<font color=#CC0000><b>include(XOOPS_ROOT_PATH.'/modules/myReferer/record.php');</b></font>
+</pre></div></div></li>
+<li>3) Reupload the modified file.</li>
+</ol>
+<br />
+That's it.
+<br />
+Pay attention, if your update you Xoops site, and that the 'header.php', the module won't work anymore! Make the above operation again.
+<br />
+<br />
+<hr />
+<a id='q2' name='q2'><h2>2) Referers</h2></a>
+<br />
+A misspelling of <i>'referrer'</i> which somehow made it into the {HTTP} standard.  A given {web page}'s referer (sic) is the {URL} of whatever web page contains the link that the user followed to the current page.  Most browsers pass this information as part of a request.
+<br />
+<br />
+<hr />
+<a id='q3' name='q3'><h2>3) Search Engine</h2></a>
+<br />
+A program that searches documents for specified keywords and returns a list of the documents where the keywords were found. Although search engine is really a general class of programs, the term is often used to specifically describe systems like Google, Alta Vista or Excite that enable users to search for documents on the World Wide Web.
+<br />
+<br />
+<hr />
+<a id='q4' name='q4'><h2>4) Keywords</h2></a>
+<br />
+Keyword is the term used for words included in a web page that would match words used by web surfers in finding that web page (via a search engine). Keywords can simply be words included in the body text of the document, or added to the header using meta tags to increase the number of keywords. Selecting keywords, that match your target audiences' use of the web is a critical marketing tactic.
+<br />
+<br />
+<hr />
+<a id='q5' name='q5'><h2>5) <b>Web Crawlers</b></h2></a>
+<br />
+A Crawler (which may also be called a robot, spider, or bot) is a program that automatically traverses the Web's hypertext structure by retrieving a document, and recursively retrieving all documents that are referenced. For more information on Crawlers and the standards of crawling which we follow, you can visit the WebRobots FAQ (http://www.robotstxt.org/wc/robots.html).
+<br />
+<br />
+<hr />
+Happy Xoopsing,
+<br>
+<h1>Solo</h1>
+<br />
+<div align='right'>myReferer is a creation of Solo (Solo71) from <a href='http://www.wolfactory.wolfpackclan.com/'>wolFactory</a>. - (c) Jully 2005</a></div>
+<br>
+Special thanks to
+<ul>
+<li><a target='_blank' href='http://www.frxoops.org/userinfo.php?uid=2740'>Marco</a> for his inspiration about the keyword section,</li>
+<li><a target='_blank' href='http://www.smartfactory.ca'>Marcan</a> who has checked my code and made it compatible with php5,</li>
+<li><a target='_blank' href='http://www.frxoops.org/userinfo.php?uid=159'>Philou</a> who has checked the security side of the module,</li>
+<li><a target='_blank' href='http://www.frxoops.org/userinfo.php?uid=2968'>DuGris</a> who has developped the 2.00 version</li>
+<li> and every xoopers who helped me with some code tips in the forums.</li>
+</ul>
+</div>
