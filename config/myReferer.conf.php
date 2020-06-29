@@ -1,92 +1,89 @@
 <?php
 /**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
-
+ * XOOPS - PHP Content Management System
+ * Copyright (c) 2004 <https://xoops.org>
+ *
+ * Module: myReferer 2.0
+ * Licence : GPL
+ * Authors :
+ *           - solo (www.wolfpackclan.com/wolfactory)
+ *            - DuGris (www.dugris.info)
+ */
 
 // Compter les visites de(s) Webmaster(s)
 $count_admin = 0;
 
-// Liste des modules à exclure
-$module_blacklist = "xoopsorgnews|xoops_redirect|user|search|notifications|viewpmsg|readpmsg";
+// Liste des modules Ã  exclure
+$module_blacklist = 'xoopsorgnews|xoops_redirect|user|search|notifications|viewpmsg|readpmsg';
 
-// Taille minimum des mots-clés recherchés
+// Taille minimum des mots-clÃ©s recherchÃ©s
 $keyword_min = 3;
 
-// Taille maximum des mots-clés recherchés
+// Taille maximum des mots-clÃ©s recherchÃ©s
 $keyword_max = 24;
 
-// Conserver la ponctuation dans les mots-clés recherchés
+// Conserver la ponctuation dans les mots-clÃ©s recherchÃ©s
 $punctation = 1;
 
-// Conserver les nombres dans les mots-clés recherchés
+// Conserver les nombres dans les mots-clÃ©s recherchÃ©s
 $numbers = 0;
 
-// Convertir les mots-clés recherchés en minuscule
+// Convertir les mots-clÃ©s recherchÃ©s en minuscule
 $smallcaps = 1;
 
-// Liste des mots clés à exclure
-$keyword_blacklist = "pour|avec|dans|site";
+// Liste des mots clÃ©s Ã  exclure
+$keyword_blacklist = 'pour|avec|dans|site';
 
-// Liste des moteurs de recherche à exclure
-$search_blacklist = "";
+// Liste des moteurs de recherche Ã  exclure
+$search_blacklist = '';
 
-// Liste des référants à exclure
-$referer_blacklist = "127.0.0.1|mail|xoopsorgnews|casino|online|rate|sex|insur|finance|viagra|drug|cialis|health|loan|credit|poker|pharma|institute|weight";
+// Liste des rÃ©fÃ©rants Ã  exclure
+$referer_blacklist = '127.0.0.1|mail|xoopsorgnews|casino|online|rate|sex|insur|finance|viagra|drug|cialis|health|loan|credit|poker|pharma|institute|weight';
 
-// Activer l'envoi d'un email pour le référencement par un nouveau robot
+// Activer l'envoi d'un email pour le rÃ©fÃ©rencement par un nouveau robot
 $new_bot_smail = 0;
 
 // Adresse d'envoi des emails
-$new_bot_mail = "";
+$new_bot_mail = '';
 
-// Liste des robots à exclure
-$robots_blacklist = "W3C_Validator|Lynx|libwww-perl";
+// Liste des robots Ã  exclure
+$robots_blacklist = 'W3C_Validator|Lynx|libwww-perl';
 
-// Page de redirection des robots prohibés
-$page_prohibit = "modules/myReferer/norobot.html";
+// Page de redirection des robots prohibÃ©s
+$page_prohibit = 'modules/myReferer/norobot.html';
 
-// Liste des robots prohibés
-$robots_prohibit = "";
+// Liste des robots prohibÃ©s
+$robots_prohibit = '';
 
-// Enregistrer les pages vues 
+// Enregistrer les pages vues
 $user_visit = 1;
 
 // Choisir les groupes
-$save_group = "2";
+$save_group = '2';
 
-// Pages - Afficher le top 
+// Pages - Afficher le top
 $myref_pages_stats = 100;
 
-// Mots clés - Afficher le top 
+// Mots clÃ©s - Afficher le top
 $myref_query_stats = 100;
 
-// Mots clés/Pages - Afficher le top 
+// Mots clÃ©s/Pages - Afficher le top
 $myref_query_pages_stats = 100;
 
-// Referer - Afficher le top 
+// Referer - Afficher le top
 $myref_referer_stats = 100;
 
-// Referer/Pages - Afficher le top 
+// Referer/Pages - Afficher le top
 $myref_referer_pages_stats = 100;
 
-// Robots - Afficher le top 
+// Robots - Afficher le top
 $myref_robots_stats = 100;
 
-// Robots/Pages - Afficher le top 
+// Robots/Pages - Afficher le top
 $myref_robots_pages_stats = 100;
 
-// Visiteurs - Afficher le top 
+// Visiteurs - Afficher le top
 $myref_users_stats = 100;
 
-// Visiteurs/Pages - Afficher le top 
+// Visiteurs/Pages - Afficher le top
 $myref_users_pages_stats = 100;
-
-?>

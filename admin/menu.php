@@ -1,73 +1,173 @@
 <?php
+
 /**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
+ * XOOPS - PHP Content Management System
+ * Copyright (c) 2004 <https://xoops.org>
+ *
+ * Module: myReferer 2.0
+ * Licence : GPL
+ * Authors :
+ *           - solo (www.wolfpackclan.com/wolfactory)
+ *            - DuGris (www.dugris.info)
+ */
 
-$adminmenu[0]['title'] = _MI_MYREF_ADMIN;
-$adminmenu[0]['link'] = "admin/index.php";
-$adminmenu[1]['title'] = _MI_MYREF_USERVISIT;
-$adminmenu[1]['link'] = "admin/stats_visitors.php";
-$adminmenu[2]['title'] = _MI_MYREF_CONFIG;
-$adminmenu[2]['link'] = "admin/config.php";
-$adminmenu[3]['title'] = _MI_MYREF_META;
-$adminmenu[3]['link'] = "admin/meta.php";
-$adminmenu[4]['title'] = _MI_MYREF_CLEAN;
-$adminmenu[4]['link'] = "admin/clean.php";
-$adminmenu[5]['title'] = _MI_MYREF_STATS;
-$adminmenu[5]['link'] = "admin/stats.php";
-$adminmenu[6]['title'] = _MI_MYREF_PERMS;
-$adminmenu[6]['link'] = "admin/permissions.php";
-$adminmenu[7]['title'] = _MI_MYREF_BLOCKS;
-$adminmenu[7]['link'] = "admin/myblocksadmin.php";
+use Xmf\Module\Admin;
+use XoopsModules\Myreferer\Helper;
 
-if (isset($xoopsModule)) {
-	$headermenu[0]['title'] = _PREFERENCES;
-	$headermenu[0]['link'] = '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule->getVar('mid');
+include dirname(__DIR__) . '/preloads/autoloader.php';
 
-	$headermenu[1]['title'] = _MD_MYREFERER_INDEX;
-	$headermenu[1]['link'] = XOOPS_URL . '/modules/myReferer/';
+$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirNameUpper = mb_strtoupper($moduleDirName);
+/** @var \XoopsModules\Myreferer\Helper $helper */
+$helper = Helper::getInstance();
+$helper->loadLanguage('common');
+$helper->loadLanguage('feedback');
 
-	$headermenu[2]['title'] = _MD_MYREFERER_UPDATE_MODULE;
-	$headermenu[2]['link'] = XOOPS_URL . "/modules/system/admin.php?fct=modulesadmin&op=update&module=" . $xoopsModule->getVar('dirname');
-
-	$headermenu[3]['title'] = _MI_MYREF_HELP;
-	$headermenu[3]['link'] = "help.php";
+$pathIcon32 = Admin::menuIconPath('');
+if (is_object($helper->getModule())) {
+    //    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+    $pathModIcon32 = $helper->url($helper->getModule()->getInfo('modicons32'));
 }
 
-$statmenu[0]['title'] = _MI_MYREF_PAGES;
-$statmenu[0]['link'] = "admin/stats_pages.php";
-$statmenu[1]['title'] = _MI_MYREF_KEYWORDS;
-$statmenu[1]['link'] = "admin/stats_keyword.php";
-$statmenu[2]['title'] = _MI_MYREF_QUERY;
-$statmenu[2]['link'] = "admin/stats_query.php";
-$statmenu[3]['title'] = _MI_MYREF_ROBOTS;
-$statmenu[3]['link'] = "admin/stats_robots.php";
-$statmenu[4]['title'] = _MI_MYREF_REFERER;
-$statmenu[4]['link'] = "admin/stats_referer.php?engine=0";
-$statmenu[5]['title'] = _MI_MYREF_ENGINE;
-$statmenu[5]['link'] = "admin/stats_referer.php?engine=1";
-$statmenu[6]['title'] = _MI_MYREF_BYMODULE_KEYWORD;
-$statmenu[6]['link'] = "admin/stats_modules.php?keyword=1";
-$statmenu[7]['title'] = _MI_MYREF_BYMODULE_QUERY;
-$statmenu[7]['link'] = "admin/stats_modules.php?keyword=0";
-$statmenu[8]['title'] = _MI_MYREF_BYREFERER;
-$statmenu[8]['link'] = "admin/stats_modules_referer.php";
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_MENU_HOME,
+    'link'  => 'admin/index.php',
+    'icon'  => $pathIcon32 . '/home.png',
+];
 
-$metamenu[0]['title'] = _MI_MYREF_DATE;
-$metamenu[0]['link'] = "admin/meta.php?ord=date&meta_limit=100";
-$metamenu[1]['title'] = _MI_MYREF_NEW;
-$metamenu[1]['link'] = "admin/meta.php?ord=new&meta_limit=100";
-$metamenu[2]['title'] = _MI_MYREF_TOP;
-$metamenu[2]['link'] = "admin/meta.php?ord=visit&meta_limit=100";
-$metamenu[3]['title'] = _MI_MYREF_POP;
-$metamenu[3]['link'] = "admin/meta.php?ord=pop&meta_limit=100";
-$metamenu[4]['title'] = _MI_MYREF_RANDOM;
-$metamenu[4]['link'] = "admin/meta.php?ord=random&meta_limit=100";
-?>
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_ADMIN,
+    'link'  => 'admin/main.php',
+    'icon'  => $pathIcon32 . '/dashboard.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_USERVISIT,
+    'link'  => 'admin/stats_visitors.php',
+    'icon'  => $pathIcon32 . '/users.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_CONFIG,
+    'link'  => 'admin/config.php',
+    'icon'  => $pathIcon32 . '/manage.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_META,
+    'link'  => 'admin/meta.php',
+    'icon'  => $pathIcon32 . '/type.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_CLEAN,
+    'link'  => 'admin/clean.php',
+    'icon'  => $pathIcon32 . '/exec.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_STATS,
+    'link'  => 'admin/stats.php',
+    'icon'  => $pathIcon32 . '/stats.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_PERMS,
+    'link'  => 'admin/permissions.php',
+    'icon'  => $pathIcon32 . '/permissions.png',
+];
+
+// Blocks Admin
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'BLOCKS'),
+    'link'  => 'admin/blocksadmin.php',
+    'icon'  => $pathIcon32 . '/block.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_BLOCKS,
+    'link'  => 'admin/myblocksadmin.php',
+    'icon'  => $pathIcon32 . '/block.png',
+];
+
+//-------------- headermenu -------------------//
+
+if (isset($xoopsModule)) {
+    $headermenu[] = [
+        'title' => _PREFERENCES,
+        'link'  => '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule->getVar('mid'),
+    ];
+
+    $headermenu[] = [
+        'title' => _MD_MYREFERER_INDEX,
+        'link'  => XOOPS_URL . '/modules/myreferer/',
+    ];
+
+    $headermenu[] = [
+        'title' => _MD_MYREFERER_UPDATE_MODULE,
+        'link'  => XOOPS_URL . '/modules/system/admin.php?fct=modulesadmin&op=update&module=' . $xoopsModule->getVar('dirname'),
+    ];
+
+    $headermenu[] = [
+        'title' => _MI_MYREFERER_HELP,
+        'link'  => 'help.php',
+    ];
+}
+
+//-------------- statmenu -------------------//
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_PAGES,
+    'link'  => 'admin/stats_pages.php',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_KEYWORDS,
+    'link'  => 'admin/stats_keyword.php',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_QUERY,
+    'link'  => 'admin/stats_query.php',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_ROBOTS,
+    'link'  => 'admin/stats_robots.php',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_REFERER,
+    'link'  => 'admin/stats_referer.php?engine=0',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_ENGINE,
+    'link'  => 'admin/stats_referer.php?engine=1',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_BYMODULE_KEYWORD,
+    'link'  => 'admin/stats_modules.php?keyword=1',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_BYMODULE_QUERY,
+    'link'  => 'admin/stats_modules.php?keyword=0',
+];
+
+$statmenu[] = [
+    'title' => _MI_MYREFERER_BYREFERER,
+    'link'  => 'admin/stats_modules_referer.php',
+
+];
+
+//-------------- metamenu -------------------//
+$metamenu[] = [
+    ['title' => _MI_MYREFERER_DATE, 'link' => 'admin/meta.php?ord=date&meta_limit=100',],
+    ['title' => _MI_MYREFERER_NEW, 'link' => 'admin/meta.php?ord=new&meta_limit=100',],
+    ['title' => _MI_MYREFERER_TOP, 'link' => 'admin/meta.php?ord=visit&meta_limit=100',],
+    ['title' => _MI_MYREFERER_POP, 'link' => 'admin/meta.php?ord=pop&meta_limit=100',],
+    ['title' => _MI_MYREFERER_RANDOM, 'link' => 'admin/meta.php?ord=random&meta_limit=100',],
+];
+

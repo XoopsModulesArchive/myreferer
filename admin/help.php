@@ -1,31 +1,31 @@
 <?php
-/**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
 
-include_once( "admin_header.php" );
-$myts =& MyTextSanitizer::getInstance();
+/**
+ * XOOPS - PHP Content Management System
+ * Copyright (c) 2004 <https://xoops.org>
+ *
+ * Module: myReferer 2.0
+ * Licence : GPL
+ * Authors :
+ *           - solo (www.wolfpackclan.com/wolfactory)
+ *            - DuGris (www.dugris.info)
+ */
+
+require_once __DIR__ . '/admin_header.php';
+$myts = \MyTextSanitizer::getInstance();
 
 //$guide = _MD_MYREFERER_GUIDE;
-//$guide = $myts->makeTareaData4Show($guide);
+//$guide = $myts->displayTarea($guide);
 
-myReferer_adminmenu(-1, _MD_MYREFERER_HELP);
+// Utility::getAdminMenu(-1, _MD_MYREFERER_HELP);
 OpenTable();
-$helpfile = XOOPS_ROOT_PATH . '/modules/myReferer/language/' . $xoopsConfig['language'] . '/help.html';
-if ( file_exists($helpfile) ) {
-	include_once ( $helpfile );
+$helpfile = XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/help.html';
+if (file_exists($helpfile)) {
+    require_once $helpfile;
 } else {
-	include_once ( XOOPS_ROOT_PATH . '/modules/myReferer/language/english/help.html' );
+    require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/english/help.html';
 }
 
 //echo $guide;
 CloseTable();
-include_once( 'admin_footer.php' );
-?>
+require_once __DIR__ . '/admin_footer.php';
