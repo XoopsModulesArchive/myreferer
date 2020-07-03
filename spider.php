@@ -61,7 +61,7 @@ if (Utility::checkRight(5)) {
             $format = 'bold';
         }
 
-        $robot_name = Utility::getRobotName($robots);
+        $robotName = Utility::getRobotName($robots);
         $ref_url    = Utility::getRobotUrl($robots);
 
         // Display weekly stats about visits and limit number to 2
@@ -80,7 +80,7 @@ if (Utility::checkRight(5)) {
 
         $info['id']          = $id;
         $info['count']       = $count;
-        $info['referer']     = $robot_name;
+        $info['referer']     = $robotName;
         $info['alt_referer'] = $robots;
         $info['icon']        = $new_icon . $pop;
         $info['ref_url']     = $ref_url;
@@ -107,7 +107,7 @@ if (Utility::checkRight(5)) {
 
     // Counter
     $xoopsTpl->assign('numrows', $count . ' / ' . $numrows . '&nbsp;' . $current);
-    $pagenav = new \XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
+    $pagenav = new XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
     $xoopsTpl->assign('pagenav', $pagenav->renderNav());
     $xoopsTpl->assign('navlink', 'spider.php?op=' . $op . '&startart=' . $startart);
     $xoopsTpl->assign('pages', _MYREFERER_PAGES);

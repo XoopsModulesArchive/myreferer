@@ -133,7 +133,7 @@ if ((Utility::checkRight(1) && 1 == $op) || (Utility::checkRight(2) && 0 == $op)
 
     // Counter
     $xoopsTpl->assign('numrows', $count . ' / ' . $numrows . '&nbsp;' . $current);
-    $pagenav = new \XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
+    $pagenav = new XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
     $xoopsTpl->assign('pagenav', $pagenav->renderNav());
     $xoopsTpl->assign('navlink', 'referer.php?op=' . $op . '&startart=' . $startart);
     $xoopsTpl->assign('pages', _MYREFERER_PAGES);

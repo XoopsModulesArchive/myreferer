@@ -14,6 +14,11 @@
 use XoopsModules\Myreferer\Utility;
 
 require __DIR__ . '/admin_header.php';
+
+xoops_cp_header();
+$adminObject = \Xmf\Module\Admin::getInstance();
+$adminObject->displayNavigation(basename(__FILE__));
+
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 // $startart = isset( $_GET['startart'] ) ? intval( $_GET['startart'] ) : 0;
 
@@ -182,7 +187,7 @@ if (0 == $count) {
     echo _MD_MYREFERER_NOVISIT . '<p>';
 } else {
     $result  = $xoopsDB->queryF($query, $xoopsModuleConfig['perpage'], $startart);
-    $pagenav = new \XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=' . $op);
+    $pagenav = new XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=' . $op);
 
     echo "<br><div style='text-align:center;'><b>$all</b> " . _MD_MYREFERER_RANKING . " <b>$ord_text</b> ($count)</div>";
     echo "<a

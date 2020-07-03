@@ -36,7 +36,7 @@ class Config extends XoopsObject
      */
     public function __construct($conf_id = null)
     {
-        $this->db = \XoopsDatabaseFactory::getDatabaseConnection();
+        $this->db = XoopsDatabaseFactory::getDatabaseConnection();
         $this->initVar('conf_id', \XOBJ_DTYPE_INT, 0, true, 5);
         $this->initVar('conf_name', \XOBJ_DTYPE_TXTBOX, '', true, 25);
         $this->initVar('conf_title', \XOBJ_DTYPE_TXTBOX, '', true, 30);

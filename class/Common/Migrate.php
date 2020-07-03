@@ -33,7 +33,7 @@ class Migrate extends \Xmf\Database\Migrate
 
     /**
      * Migrate constructor.
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws \InvalidArgumentException
      */
     public function __construct()

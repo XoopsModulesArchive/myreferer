@@ -14,6 +14,11 @@
 use XoopsModules\Myreferer\Utility;
 
 require __DIR__ . '/admin_header.php';
+
+xoops_cp_header();
+$adminObject = \Xmf\Module\Admin::getInstance();
+$adminObject->displayNavigation(basename(__FILE__));
+
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 // $startart = isset( $_GET['startart'] ) ? intval( $_GET['startart'] ) : 0;
 
@@ -201,7 +206,7 @@ if (0 == $count) {
     echo _MD_MYREFERER_NOVISIT . '<p>';
 } else {
     $result  = $xoopsDB->queryF($query, $xoopsModuleConfig['perpage'], $startart);
-    $pagenav = new \XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=' . $op);
+    $pagenav = new XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=' . $op);
 
     echo "<br><div style='text-align:center;'><b>$all</b> " . _MD_MYREFERER_RANKING . " <b>$ord_text</b> ($count)</div>";
     echo "<a
@@ -266,18 +271,18 @@ if (0 == $count) {
         $page = str_replace(XOOPS_URL, '', 'http://' . $myrow['page']);
 
         $robot      = addslashes($myrow['robots']);
-        $robot_name = Utility::getRobotName($robot);
-        $robot_url  = Utility::getRobotUrl($robot);
+        $robotName = Utility::getRobotName($robot);
+        $robotUrl  = Utility::getRobotUrl($robot);
 
         require __DIR__ . '/robots_pics.php';
 
-        if ('' != $robot_url) {
-            $robot_name = "<a href='$robot_url' title='" . $myrow['robots'] . "' title='" . $myrow['robots'] . "' target='_blank'>$robot_name</a>";
+        if ('' != $robotUrl) {
+            $robotName = "<a href='$robotUrl' title='" . $myrow['robots'] . "' title='" . $myrow['robots'] . "' target='_blank'>$robotName</a>";
         } else {
-            $robot_name = $myrow['robots'];
+            $robotName = $myrow['robots'];
         }
-        $robot_name = '<a href="stats_robots.php?search=' . $robot_icon . '">
-                            <img src="../assets/images/logos/robots/robot_' . $robot_icon . '.png" alt="' . $robot_icon . '"></a> ' . $robot_name;
+        $robotName = '<a href="stats_robots.php?search=' . $robotIcon . '">
+                            <img src="../assets/images/logos/robots/robot_' . $robotIcon . '.png" alt="' . $robotIcon . '"></a> ' . $robotName;
 
         $detail = "<a onclick=\"window.open('', 'wclose', 'width=800, height=500, toolbar=no, scrollbars=yes, status=no, resizable=no, fullscreen=no, titlebar=no, left=10, top=10', 'false')\"  href='detail_robots.php?id=" . $myrow['id'] . "' target='wclose'>
 				<img src='../assets/images/icon/detail.gif' alt='" . _MD_MYREFERER_MORE . "'></a>";
@@ -316,7 +321,7 @@ if (0 == $count) {
         echo "<tr $bg >
 				  <td align='center'>	$i	</td>
                   <td align='center'><b>" . $myrow['visit_tmp'] . '</b> (' . $myrow['visit'] . ")	</td>
-                  <td align='left'>		$robot_name 	</td>
+                  <td align='left'>		$robotName 	</td>
                   <td align='center'>	$time	</td>
                   <td align='center'>	<nobr>$detail&nbsp;$delete&nbsp;$status&nbsp;$tracker</nobr>	</td>
                   </tr>";

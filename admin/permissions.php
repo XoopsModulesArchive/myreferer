@@ -39,7 +39,7 @@ $myts = \MyTextSanitizer::getInstance();
 $item_list_view = [];
 $block_view     = [];
 echo "<h3 style='color: #2F5376; font-weight: bold; font-size: 14px; margin: 6px 0 0 0; '>" . _MD_MYREFERER_PERMISSIONS_DSC . '</h3>';
-$form_view = new \XoopsGroupPermForm('', $xoopsModule->getVar('mid'), 'myReferer_wiew', '');
+$form_view = new XoopsGroupPermForm('', $xoopsModule->getVar('mid'), 'myReferer_wiew', '');
 $form_view->addItem(1, _MD_MYREFERER_REFERER);
 $form_view->addItem(2, _MD_MYREFERER_ENGINE);
 $form_view->addItem(3, _MD_MYREFERER_KEYWORDS);

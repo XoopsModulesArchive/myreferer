@@ -17,15 +17,14 @@ use XoopsModules\Myreferer\Helper;
 include dirname(__DIR__) . '/preloads/autoloader.php';
 
 require dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
-//require $GLOBALS['xoops']->path('www/class/xoopsformloader.php');
+require $GLOBALS['xoops']->path('www/class/xoopsformloader.php');
 require dirname(__DIR__) . '/include/common.php';
 
 $moduleDirName = basename(dirname(__DIR__));
 
-/** @var \XoopsModules\Myreferer\Helper $helper */
 $helper = Helper::getInstance();
 
-/** @var \Xmf\Module\Admin $adminObject */
+/** @var Admin $adminObject */
 $adminObject = Admin::getInstance();
 
 // Load language files
@@ -37,7 +36,7 @@ $helper->loadLanguage('main');
 //--------------------------------------------------
 
 if (!preg_match('/detail/', basename($_SERVER['SCRIPT_NAME']))) {
-    //    xoops_cp_header();
+//        xoops_cp_header();
     echo '<style type="text/css">';
     echo 'th a:link {text-decoration: none; color: #ffff00; font-weight: bold; background-color: transparent;}';
     echo 'th a:active {text-decoration: none; color: #ffffff; font-weight: bold; background-color: transparent;}';

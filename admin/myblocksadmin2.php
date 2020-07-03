@@ -77,7 +77,7 @@ if (!$grouppermHandler->checkRight('system_admin', XOOPS_SYSTEM_BLOCK, $xoopsUse
 }
 
 // get blocks owned by the module (Imported from xoopsblock.php then modified)
-$db        = \XoopsDatabaseFactory::getDatabaseConnection();
+$db        = XoopsDatabaseFactory::getDatabaseConnection();
 $sql       = 'SELECT bid,name,show_func,func_file,template FROM ' . $db->prefix('newblocks') . " WHERE mid='$target_mid'";
 $result    = $db->query($sql);
 $block_arr = [];
@@ -114,18 +114,18 @@ function list_blockinstances()
 		</tr>\n";
 
     // get block instances
-    $crit     = new \Criteria('bid', '(' . implode(',', array_keys($block_arr)) . ')', 'IN');
-    $criteria = new \CriteriaCompo($crit);
+    $crit     = new Criteria('bid', '(' . implode(',', array_keys($block_arr)) . ')', 'IN');
+    $criteria = new CriteriaCompo($crit);
     $criteria->setSort('visible DESC, side ASC, weight');
     $instanceHandler = xoops_getHandler('blockinstance');
-    $instances       = &$instanceHandler->getObjects($criteria, true, true);
+    $instances       = $instanceHandler->getObjects($criteria, true, true);
 
     //Get modules and pages for visible in
     $module_list[_AM_SYSTEMLEVEL]['0-2'] = _AM_ADMINBLOCK;
     $module_list[_AM_SYSTEMLEVEL]['0-1'] = _AM_TOPPAGE;
     $module_list[_AM_SYSTEMLEVEL]['0-0'] = _AM_ALLPAGES;
-    $criteria                            = new \CriteriaCompo(new \Criteria('hasmain', 1));
-    $criteria->add(new \Criteria('isactive', 1));
+    $criteria                            = new CriteriaCompo(new Criteria('hasmain', 1));
+    $criteria->add(new Criteria('isactive', 1));
     $moduleHandler = xoops_getHandler('module');
     $module_main   = $moduleHandler->getObjects($criteria, true, true);
     if (count($module_main) > 0) {
@@ -323,7 +323,7 @@ function list_groups2()
         $item_list[$iid] = $title;
     }
 
-    $form = new GroupPermForm(_MD_AM_ADGS, 1, 'block_read', '');
+    $form = new GroupPermForm(_AM_ADGS, 1, 'block_read', '');
     if ($target_mid > 1) {
         $form->addAppendix('module_admin', $target_mid, $target_mname . ' ' . _AM_ACTIVERIGHTS);
         $form->addAppendix('module_read', $target_mid, $target_mname . ' ' . _AM_ACCESSRIGHTS);

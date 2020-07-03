@@ -25,8 +25,8 @@ use function count;
 trait ModuleStats
 {
     /**
-     * @param \XoopsModules\Myreferer\Common\Configurator $configurator
-     * @param array                                       $moduleStats
+     * @param Configurator $configurator
+     * @param array        $moduleStats
      * @return array
      */
     public static function getModuleStats($configurator, $moduleStats)

@@ -20,7 +20,7 @@ $form_letter = '';
 
 while (list($query) = $xoopsDB->fetchRow($result)) {
     $ii++;
-    $letter = mb_substr(mb_strtolower($query), 0, 1);
+    $letter = mb_strtolower(mb_substr($query, 0, 1));
     if ($letter != $form_letter) {
         $first_letter = '<h3>' . $letter . '</h3>';
         $i++;

@@ -31,7 +31,7 @@ if ($data) {
     $date  = time() - (86400 * $date);
     $datas = implode(', ', $data);
     if (preg_match('/myref_pages/', $datas)) {
-        $datas = $datas . ', myref_query_pages, myref_referer_pages, myref_robots_pages, myref_users_pages';
+        $datas .= ', myref_query_pages, myref_referer_pages, myref_robots_pages, myref_users_pages';
     }
     $array  = explode(', ', $datas);
     $result = '<p>' . _MD_MYREFERER_CLEANED;
@@ -75,12 +75,14 @@ if ($data) {
 
         $result .= '<div align="center">' . $datas . ' : <b>' . $total . _MD_MYREFERER_ENTRIES . '</b></div>';
         if ($total) {
-            $i = $i + 2;
+            $i += 2;
         }
     }
     redirect_header('clean.php', $i, _MD_MYREFERER_UPDATED . $result);
     exit();
-} elseif ('clean' === $ord) {
+}
+
+if ('clean' === $ord) {
     redirect_header('clean.php', 1, _MD_MYREFERER_ERROR);
     exit();
 }

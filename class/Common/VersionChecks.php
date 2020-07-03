@@ -49,9 +49,9 @@ trait VersionChecks
     /**
      * Verifies XOOPS version meets minimum requirements for this module
      * @static
-     * @param \XoopsModule|null $module
+     * @param XoopsModule|null $module
      *
-     * @param null|string       $requiredVer
+     * @param null|string      $requiredVer
      * @return bool true if meets requirements, false if not
      */
     public static function checkVerXoops(XoopsModule $module = null, $requiredVer = null)
@@ -59,7 +59,7 @@ trait VersionChecks
         $moduleDirName      = basename(dirname(dirname(__DIR__)));
         $moduleDirNameUpper = mb_strtoupper($moduleDirName);
         if (null === $module) {
-            $module = \XoopsModule::getByDirname($moduleDirName);
+            $module = XoopsModule::getByDirname($moduleDirName);
         }
         xoops_loadLanguage('admin', $moduleDirName);
         xoops_loadLanguage('common', $moduleDirName);
@@ -82,7 +82,7 @@ trait VersionChecks
     /**
      * Verifies PHP version meets minimum requirements for this module
      * @static
-     * @param \XoopsModule|null $module
+     * @param XoopsModule|null $module
      *
      * @return bool true if meets requirements, false if not
      */
@@ -91,7 +91,7 @@ trait VersionChecks
         $moduleDirName      = basename(dirname(dirname(__DIR__)));
         $moduleDirNameUpper = mb_strtoupper($moduleDirName);
         if (null === $module) {
-            $module = \XoopsModule::getByDirname($moduleDirName);
+            $module = XoopsModule::getByDirname($moduleDirName);
         }
         xoops_loadLanguage('admin', $moduleDirName);
         xoops_loadLanguage('common', $moduleDirName);

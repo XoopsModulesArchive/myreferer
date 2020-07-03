@@ -14,6 +14,11 @@
 use XoopsModules\Myreferer\Utility;
 
 require __DIR__ . '/admin_header.php';
+
+xoops_cp_header();
+$adminObject = \Xmf\Module\Admin::getInstance();
+$adminObject->displayNavigation(basename(__FILE__));
+
 // require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 $op = $_POST['op'] ?? ($_GET['op'] ?? '');

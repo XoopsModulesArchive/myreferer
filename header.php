@@ -22,7 +22,6 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 $moduleDirName = basename(__DIR__);
 
-/** @var \XoopsModules\Myreferer\Helper $helper */
 $helper = Helper::getInstance();
 
 $modulePath = XOOPS_ROOT_PATH . '/modules/' . $moduleDirName;

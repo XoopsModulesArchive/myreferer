@@ -72,7 +72,10 @@ if ('random' === $ord) {
 
     [$total] = $xoopsDB->fetchRow($result);
     $total = $total - $meta_limit;
-    $rand  = random_int(0, $total);
+    try {
+        $rand = random_int(0, $total);
+    } catch (Exception $e) {
+    }
 } else {
     $rand = '';
 }

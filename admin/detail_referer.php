@@ -104,8 +104,8 @@ if (0 == $count) {
     }
 
     // Display weekly stats about visits and limit number to 2
-    $robot_name = Utility::getRobotName($myrow['robots']);
-    $robot_url  = Utility::getRobotUrl($myrow['robots']);
+    $robotName = Utility::getRobotName($myrow['robots']);
+    $robotUrl  = Utility::getRobotUrl($myrow['robots']);
 
     $visit     = $myrow['visit'];
     $page      = $myrow['page'];

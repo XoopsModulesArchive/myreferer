@@ -131,8 +131,8 @@ if (0 == $count) {
     }
 
     // Display weekly stats about visits and limit number to 2
-    $robot_name = Utility::getRobotName($myrow['robots']);
-    $robot_url  = Utility::getRobotUrl($myrow['robots']);
+    $robotName = Utility::getRobotName($myrow['robots']);
+    $robotUrl  = Utility::getRobotUrl($myrow['robots']);
 
     $visit     = $myrow['visit'];
     $page      = $myrow['page'];
@@ -153,7 +153,7 @@ if (0 == $count) {
         $stats = '<b>' . $visit . '</b>';
     }
 
-    echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_ROBOTS . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $robot_name . ' - ' . robot_url . '</td></tr>';
+    echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_ROBOTS . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $robotName . ' - ' . robot_url . '</td></tr>';
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_ID . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $myrow['id'] . '</td></tr>';
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_TOTAL . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $stats . '</td></tr>';
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_WEEK . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $myrow['visit_tmp'] . '</td></tr>';

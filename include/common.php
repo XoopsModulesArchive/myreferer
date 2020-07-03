@@ -25,10 +25,10 @@ include dirname(__DIR__) . '/preloads/autoloader.php';
 $moduleDirName      = basename(dirname(__DIR__));
 $moduleDirNameUpper = mb_strtoupper($moduleDirName); //$capsDirName
 
-/** @var \XoopsDatabase $db */
-/** @var \XoopsModules\Myreferer\Helper $helper */
+/** @var XoopsDatabase $db */
+/** @var Helper $helper */
 /** @var \XoopsModules\Myreferer\Utility $utility */
-$db      = \XoopsDatabaseFactory::getDatabaseConnection();
+$db      = XoopsDatabaseFactory::getDatabaseConnection();
 $debug   = false;
 $helper  = Helper::getInstance($debug);
 $utility = new \XoopsModules\Myreferer\Utility();
@@ -80,9 +80,9 @@ $debug = false;
 // MyTextSanitizer object
 $myts = \MyTextSanitizer::getInstance();
 
-if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof \XoopsTpl)) {
+if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof XoopsTpl)) {
     require_once $GLOBALS['xoops']->path('class/template.php');
-    $GLOBALS['xoopsTpl'] = new \XoopsTpl();
+    $GLOBALS['xoopsTpl'] = new XoopsTpl();
 }
 
 $GLOBALS['xoopsTpl']->assign('mod_url', XOOPS_URL . '/modules/' . $moduleDirName);

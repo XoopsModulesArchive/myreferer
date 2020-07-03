@@ -14,6 +14,11 @@
 use XoopsModules\Myreferer\Utility;
 
 require __DIR__ . '/admin_header.php';
+
+xoops_cp_header();
+$adminObject = \Xmf\Module\Admin::getInstance();
+$adminObject->displayNavigation(basename(__FILE__));
+
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 $startart = $_POST['startart'] ?? ($_GET['startart'] ?? 0);
@@ -193,7 +198,7 @@ if (0 == $count) {
     echo _MD_MYREFERER_NOVISIT . '<p>';
 } else {
     $result  = $xoopsDB->queryF($query, $xoopsModuleConfig['perpage'], $startart);
-    $pagenav = new \XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&engine=' . $engine . '&week=' . $week . '&op=' . $op);
+    $pagenav = new XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&engine=' . $engine . '&week=' . $week . '&op=' . $op);
 
     echo "<br><div style='text-align:center;'><b>$all</b> " . _MD_MYREFERER_RANKING . " <b>$ord_text</b> ($count)</div>";
     echo "<a
@@ -259,8 +264,8 @@ if (0 == $count) {
         if ($engine) {
             $robot = addslashes($myrow['referer']);
             require __DIR__ . '/robots_pics.php';
-            $referer_name = '<a href="stats_referer.php?engine=' . $engine . '&search=' . $robot_icon . '">
-                            <img src="../assets/images/logos/robots/robot_' . $robot_icon . '.png" alt="' . $robot_icon . '"></a>
+            $referer_name = '<a href="stats_referer.php?engine=' . $engine . '&search=' . $robotIcon . '">
+                            <img src="../assets/images/logos/robots/robot_' . $robotIcon . '.png" alt="' . $robotIcon . '"></a>
                             <a href="' . $myrow['ref_url'] . '" title="' . $myrow['ref_url'] . '" target="_blank">' . $myrow['referer'] . '</a>';
         } else {
             if (preg_match('xoops', $myrow['ref_url']) || preg_match('/modules/', $myrow['ref_url'])) {

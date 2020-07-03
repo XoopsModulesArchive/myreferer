@@ -286,13 +286,13 @@ if (Utility::checkRight(5)) {
             $format = 'bold';
         }
 
-        $robot_name = Utility::getRobotName($robots);
+        $robotName = Utility::getRobotName($robots);
         $ref_url    = Utility::getRobotUrl($robots);
 
         // Compile results of robots
         $info_robots['id']          = $id;
         $info_robots['count']       = $count;
-        $info_robots['referer']     = $robot_name;
+        $info_robots['referer']     = $robotName;
         $info_robots['alt_referer'] = $robots;
         $info_robots['ref_url']     = $ref_url;
         $info_robots['visit']       = $visit;
@@ -402,13 +402,13 @@ if (Utility::checkRight(7)) {
             $format = 'bold';
         }
 
-        //		$robot_name = Utility::getRobotName($users);
+        //		$robotName = Utility::getRobotName($users);
         //		$ref_url = Utility::getRobotUrl($users);
 
         // Compile results of users
         $info_users['id']          = $id;
         $info_users['count']       = $count;
-        $info_users['referer']     = \XoopsUser::getUnameFromId($users);
+        $info_users['referer']     = XoopsUser::getUnameFromId($users);
         $info_users['alt_referer'] = $users;
         $info_users['ref_url']     = XOOPS_URL . '/userinfo.php?uid=' . $users;
         $info_users['visit']       = $visit;

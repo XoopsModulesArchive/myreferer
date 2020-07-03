@@ -28,12 +28,12 @@ require_once XOOPS_ROOT_PATH . '/kernel/object.php';
 /**
  * Class ConfigsHandler
  */
-class ConfigHandler extends \XoopsObjectHandler
+class ConfigHandler extends XoopsObjectHandler
 {
     /**
      * @param int  $id
      * @param bool $asobject
-     * @return bool|\Configs|\XoopsObject
+     * @return bool|\Configs|XoopsObject
      */
     public function get($id, $asobject = true)
     {
@@ -60,7 +60,7 @@ class ConfigHandler extends \XoopsObjectHandler
     }
 
     /**
-     * @param \XoopsObject $config
+     * @param XoopsObject $config
      * @return bool|void
      */
     public function insert(XoopsObject $config)

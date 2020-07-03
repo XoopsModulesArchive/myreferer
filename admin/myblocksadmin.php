@@ -9,13 +9,15 @@ use XoopsModules\Myreferer\GroupPermForm;
 
 require __DIR__ . '/admin_header.php';
 
+$helper->loadLanguage('blocksadmin');
+
 //xoops_cp_header();
 $adminObject = \Xmf\Module\Admin::getInstance();
 $adminObject->displayNavigation(basename(__FILE__));
 
 if (mb_substr(XOOPS_VERSION, 6, 3) > 2.0) {
-    require __DIR__ . '/myblocksadmin2.php';
-    exit;
+//    require __DIR__ . '/myblocksadmin2.php';
+//    exit;
 }
 
 require_once __DIR__ . '/mygrouppermform.php';
@@ -79,13 +81,13 @@ if (!$grouppermHandler->checkRight('system_admin', XOOPS_SYSTEM_BLOCK, $xoopsUse
 }
 
 // get blocks owned by the module (Imported from xoopsblock.php then modified)
-//$block_arr =& XoopsBlock::getByModule( $target_mid ) ;
-$db        = \XoopsDatabaseFactory::getDatabaseConnection();
+//$block_arr = XoopsBlock::getByModule( $target_mid ) ;
+$db        = XoopsDatabaseFactory::getDatabaseConnection();
 $sql       = 'SELECT * FROM ' . $db->prefix('newblocks') . " WHERE mid='$target_mid' ORDER BY visible DESC,side,weight";
 $result    = $db->query($sql);
 $block_arr = [];
 while (false !== ($myrow = $db->fetchArray($result))) {
-    $block_arr[] = new \XoopsBlock($myrow);
+    $block_arr[] = new XoopsBlock($myrow);
 }
 
 function list_blocks()
@@ -179,15 +181,15 @@ function list_blocks()
         }
 
         // target modules
-        $db            = \XoopsDatabaseFactory::getDatabaseConnection();
+        $db            = XoopsDatabaseFactory::getDatabaseConnection();
         $result        = $db->query('SELECT module_id FROM ' . $db->prefix('block_module_link') . " WHERE block_id='$bid'");
         $selected_mids = [];
         while (list($selected_mid) = $db->fetchRow($result)) {
             $selected_mids[] = (int)$selected_mid;
         }
         $moduleHandler = xoops_getHandler('module');
-        $criteria      = new \CriteriaCompo(new \Criteria('hasmain', 1));
-        $criteria->add(new \Criteria('isactive', 1));
+        $criteria      = new CriteriaCompo(new Criteria('hasmain', 1));
+        $criteria->add(new Criteria('isactive', 1));
         $module_list     = $moduleHandler->getList($criteria);
         $module_list[-1] = _AM_TOPPAGE;
         $module_list[0]  = _AM_ALLPAGES;
@@ -351,7 +353,7 @@ function list_groups()
         $item_list[$block_arr[$i]->getVar('bid')] = $block_arr[$i]->getVar('title');
     }
 
-    $form = new GroupPermForm(_MD_AM_ADGS, 1, 'block_read', '');
+    $form = new GroupPermForm(_AM_ADGS, 1, 'block_read', '');
     if ($target_mid > 1) {
         $form->addAppendix('module_admin', $target_mid, $target_mname . ' ' . _AM_ACTIVERIGHTS);
         $form->addAppendix('module_read', $target_mid, $target_mname . ' ' . _AM_ACCESSRIGHTS);
@@ -372,6 +374,7 @@ if (!empty($_POST['submit'])) {
 }
 
 require_once __DIR__ . '/admin_header.php';
+xoops_cp_header();
 // Utility::getAdminMenu(7, _MD_MYREFERER_BLOCKS);
 
 if (!empty($block_arr)) {

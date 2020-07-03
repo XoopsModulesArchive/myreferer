@@ -461,7 +461,7 @@ function a_myreferer_show($options)
 
             if ('users' === $options[0]) {
                 $ref_url = XOOPS_URL . '/userinfo.php?uid=' . $referer;
-                $referer = \XoopsUser::getUnameFromId($referer);
+                $referer = XoopsUser::getUnameFromId($referer);
             }
             $referer = trim($referer);
             if (mb_strlen($referer) > $options[4] && 0 != $options[4]) {

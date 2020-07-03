@@ -170,7 +170,7 @@ if (0 == $count) {
 
         $i++;
         if ('user' === $data) {
-            $myrow[$data] = \XoopsUser::getUnameFromId($myrow[$data]);
+            $myrow[$data] = XoopsUser::getUnameFromId($myrow[$data]);
         }
         echo "<tr $bg>
               <td align='center'>       $i</td>

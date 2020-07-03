@@ -18,7 +18,6 @@ include dirname(__DIR__) . '/preloads/autoloader.php';
 
 $moduleDirName      = basename(dirname(__DIR__));
 $moduleDirNameUpper = mb_strtoupper($moduleDirName);
-/** @var \XoopsModules\Myreferer\Helper $helper */
 $helper = Helper::getInstance();
 $helper->loadLanguage('common');
 $helper->loadLanguage('feedback');
@@ -78,6 +77,13 @@ $adminmenu[] = [
 ];
 
 // Blocks Admin
+
+$adminmenu[] = [
+    'title' => _MI_MYREFERER_BLOCKS,
+    'link'  => 'admin/myblocksadmin.php',
+    'icon'  => $pathIcon32 . '/block.png',
+];
+
 $adminmenu[] = [
     'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'BLOCKS'),
     'link'  => 'admin/blocksadmin.php',
@@ -85,10 +91,11 @@ $adminmenu[] = [
 ];
 
 $adminmenu[] = [
-    'title' => _MI_MYREFERER_BLOCKS,
-    'link'  => 'admin/myblocksadmin.php',
-    'icon'  => $pathIcon32 . '/block.png',
+    'title' => _MI_MYREFERER_MENU_ABOUT,
+    'link' => 'admin/about.php',
+    'icon' => $pathIcon32 . '/about.png',
 ];
+
 
 //-------------- headermenu -------------------//
 

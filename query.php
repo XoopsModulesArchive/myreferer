@@ -84,7 +84,7 @@ if ((Utility::checkRight(3) && 1 == $op) || (Utility::checkRight(4) && 0 == $op)
         }
 
         if ('alpha' === $ord) {
-            $letter = mb_substr(mb_strtolower($query), 0, 1);
+            $letter = mb_strtolower(mb_substr($query, 0, 1));
             $letter = preg_replace('/&(.)(grave|acute|circ|cedil|ring|tilde|uml);/', 'e', $letter);
             $letter = strtr($letter, 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ', 'aaaaaaaaaaaaooooooooooooeeeeeeeecciiiiiiiiuuuuuuuuynn');
 
@@ -141,7 +141,7 @@ if ((Utility::checkRight(3) && 1 == $op) || (Utility::checkRight(4) && 0 == $op)
     // Counter & page nav
     $xoopsTpl->assign('numrows', $count . ' / ' . $numrows . '&nbsp;' . $current);
     $xoopsTpl->assign('limit', $numrows / 4);
-    $pagenav = new \XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord);
+    $pagenav = new XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord);
     $xoopsTpl->assign('pagenav', $pagenav->renderNav());
     $xoopsTpl->assign('navlink', 'query.php?op=' . $op . '&startart=' . $startart);
     $xoopsTpl->assign('pages', '<a href="query.php?ord=alpha">' . _MYREFERER_PAGES . '</a>');

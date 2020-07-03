@@ -12,8 +12,8 @@
  */
 foreach ($pattern_robots as $pattern_robot) {
     if (preg_match($pattern_robot, $robot)) {
-        $robot_icon = $pattern_robot;
+        $robotIcon = $pattern_robot;
         break;
     }
-    $robot_icon = 'robot';
+    $robotIcon = 'robot';
 }

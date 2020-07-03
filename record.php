@@ -408,7 +408,7 @@ if (!preg_match('Mozilla', $robots) && !preg_match('Opera', $robots) || preg_mat
         $hide = '1';
     }
 
-    $robot_name = Utility::getRobotName($robots);
+    $robotName = Utility::getRobotName($robots);
     $ref_url    = Utility::getRobotUrl($robots);
 
     $sql    = 'SELECT id, tracker FROM ' . $xoopsDB->prefix('myref_robots') . " WHERE robots = '$robots' ";
@@ -424,7 +424,7 @@ if (!preg_match('Mozilla', $robots) && !preg_match('Opera', $robots) || preg_mat
 
         // send for new bot
         if ($new_bot_smail) {
-            Utility::sendMail(1, $new_bot_mail, $robot_name, $ref_url, $page);
+            Utility::sendMail(1, $new_bot_mail, $robotName, $ref_url, $page);
         }
     } else {
         $myrow    = $xoopsDB->fetchArray($result);
@@ -439,7 +439,7 @@ if (!preg_match('Mozilla', $robots) && !preg_match('Opera', $robots) || preg_mat
 
         // send mail for bot tracker
         //		if ( $tracker ) {
-        //        	Utility::sendMail ( 0 , $new_bot_mail, $robot_name, $ref_url, $page ) ;
+        //        	Utility::sendMail ( 0 , $new_bot_mail, $robotName, $ref_url, $page ) ;
         //		}
     }
 
@@ -454,7 +454,7 @@ if (!preg_match('Mozilla', $robots) && !preg_match('Opera', $robots) || preg_mat
 
         // send mail for bot tracker
         if ($tracker) {
-            Utility::sendMail(0, $new_bot_mail, $robot_name, $ref_url, $page);
+            Utility::sendMail(0, $new_bot_mail, $robotName, $ref_url, $page);
         }
     } else {
         $myrow   = $xoopsDB->fetchArray($result);
@@ -468,7 +468,7 @@ if (!preg_match('Mozilla', $robots) && !preg_match('Opera', $robots) || preg_mat
 
         // send mail for page tracker
         if ($tracker) {
-            Utility::sendMail(0, $new_bot_mail, $robot_name, $ref_url, $page);
+            Utility::sendMail(0, $new_bot_mail, $robotName, $ref_url, $page);
         }
     }
 }

@@ -81,8 +81,8 @@ if (Utility::checkRight(6)) {
         // Compile results of query
         $info['id']          = $id;
         $info['count']       = $count;
-        $info['referer']     = \XoopsUser::getUnameFromId($user);
-        $info['alt_referer'] = \XoopsUser::getUnameFromId($user, 1);
+        $info['referer']     = XoopsUser::getUnameFromId($user);
+        $info['alt_referer'] = XoopsUser::getUnameFromId($user, 1);
         $info['icon']        = $new_icon . $pop;
         $info['ref_url']     = XOOPS_URL . '/userinfo.php?uid=' . $user;
         $info['page']        = '';
@@ -108,7 +108,7 @@ if (Utility::checkRight(6)) {
 
     // Counter
     $xoopsTpl->assign('numrows', $count . ' / ' . $numrows . '&nbsp;' . $current);
-    $pagenav = new \XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
+    $pagenav = new XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
     $xoopsTpl->assign('pagenav', $pagenav->renderNav());
     $xoopsTpl->assign('navlink', 'users.php?startart=' . $startart);
     $xoopsTpl->assign('pages', _MYREFERER_PAGES);

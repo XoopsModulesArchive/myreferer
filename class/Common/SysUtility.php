@@ -161,7 +161,7 @@ class SysUtility
     /**
      * @param null       $helper
      * @param array|null $options
-     * @return \XoopsFormDhtmlTextArea|\XoopsFormEditor
+     * @return \XoopsFormDhtmlTextArea|XoopsFormEditor
      */
     public static function getEditor($helper = null, $options = null)
     {

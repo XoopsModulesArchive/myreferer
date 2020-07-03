@@ -112,7 +112,7 @@ if (0 == $robots) {
         echo "<tr class='" . $bg . "'>
             	  <td align='center'>$i</td>
                   <td align='center'>" . $myrow['visit'] . "</td>
-                  <td align='left'><a href='$robot_url' target='_blank' title='" . $myrow['robots'] . "'>$robot_name</a></td>
+                  <td align='left'><a href='$robotUrl' target='_blank' title='" . $myrow['robots'] . "'>$robotName</a></td>
                   <td align='left'><a href='http://" . $myrow['page'] . "' target='_blank'>$page</a></td>
                   <td>$dates</td>
                   <td align='center'>$delete</td>

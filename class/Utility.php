@@ -94,11 +94,11 @@ class Utility extends Common\SysUtility
      *
      * @param mixed $newbot
      * @param mixed $new_bot_mail
-     * @param mixed $robot_name
-     * @param mixed $robot_url
+     * @param mixed $robotName
+     * @param mixed $robotUrl
      * @param mixed $page
      */
-    public static function sendMail($newbot, $new_bot_mail, $robot_name, $robot_url, $page)
+    public static function sendMail($newbot, $new_bot_mail, $robotName, $robotUrl, $page)
     {
         global $xoopsConfig;
         require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/main.php';
@@ -114,14 +114,14 @@ class Utility extends Common\SysUtility
             $xoopsMailer->setSubject(\sprintf(_MYREFERER_MAIL_SUBJECT_NEW, $xoopsConfig['sitename']));
         } else {
             $xoopsMailer->setTemplate('trackerbot.tpl');
-            $xoopsMailer->setSubject(\sprintf(_MYREFERER_MAIL_SUBJECT_TRACKER, $xoopsConfig['sitename'], $robot_name));
+            $xoopsMailer->setSubject(\sprintf(_MYREFERER_MAIL_SUBJECT_TRACKER, $xoopsConfig['sitename'], $robotName));
         }
         $xoopsMailer->assign('SITENAME', $xoopsConfig['sitename'] . ' - ' . $xoopsConfig['slogan']);
         $xoopsMailer->assign('ADMINMAIL', $xoopsConfig['adminmail']);
         $xoopsMailer->assign('SITEURL', XOOPS_URL . '/');
-        $xoopsMailer->assign('SPIDER', $robot_name);
+        $xoopsMailer->assign('SPIDER', $robotName);
         if ($ref_url) {
-            $xoopsMailer->assign('SPIDER_URL', '(' . $robot_url . ')');
+            $xoopsMailer->assign('SPIDER_URL', '(' . $robotUrl . ')');
         } else {
             $xoopsMailer->assign('SPIDER_URL', ' ');
         }
@@ -309,7 +309,7 @@ class Utility extends Common\SysUtility
     ";
         // global $xoopsDB, $xoopsModule, $xoopsConfig, $xoopsModuleConfig;
         global $xoopsModule, $xoopsConfig;
-        $myts = MyTextSanitizer::getInstance();
+        $myts = \MyTextSanitizer::getInstance();
 
         $tblColors                 = array_fill(0, 8, '');
         $tblColors[$currentoption] = 'current';
@@ -376,7 +376,8 @@ class Utility extends Common\SysUtility
     ";
         // global $xoopsDB, $xoopsModule, $xoopsConfig, $xoopsModuleConfig;
         global $xoopsModule, $xoopsConfig;
-        $myts = MyTextSanitizer::getInstance();
+        $myts = \MyTextSanitizer::getInstance();
+        $statmenu = [];
 
         $tblColors                 = array_fill(0, 8, '');
         $tblColors[$currentoption] = 'current';
@@ -458,18 +459,20 @@ class Utility extends Common\SysUtility
     ";
         // global $xoopsDB, $xoopsModule, $xoopsConfig, $xoopsModuleConfig;
         global $xoopsModule, $xoopsConfig;
-        $myts = MyTextSanitizer::getInstance();
+        $myts = \MyTextSanitizer::getInstance();
 
         $tblColors                 = array_fill(0, 8, '');
         $tblColors[$currentoption] = 'current';
 
         //echo XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/modinfo.php';
 
-        if (\file_exists(XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/modinfo.php')) {
-            require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/modinfo.php';
-        } else {
-            require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/french/modinfo.php';
-        }
+//        if (\file_exists(XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/modinfo.php')) {
+//            require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/' . $xoopsConfig['language'] . '/modinfo.php';
+//        } else {
+//            require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/french/modinfo.php';
+//        }
+
+        xoops_loadLanguage('modinfo', 'myreferer');
 
         require \dirname(__DIR__) . '/admin/menu.php';
         echo '<br><div id="statbar">';
@@ -580,7 +583,7 @@ class Utility extends Common\SysUtility
      */
     public static function getMeta($key)
     {
-        $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
+        $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $sql     = \sprintf('SELECT conf_value FROM %s WHERE conf_name=%s', $xoopsDB->prefix('myref_config'), $xoopsDB->quoteString($key));
         $ret     = $xoopsDB->query($sql);
         if (!$ret) {
@@ -604,7 +607,9 @@ class Utility extends Common\SysUtility
             self::adminChmod($thePath, $mode = 0777);
 
             return $thePath;
-        } elseif (!@\is_dir($thePath)) {
+        }
+
+        if (!@\is_dir($thePath)) {
             self::adminMkdir($thePath);
 
             return $thePath;
@@ -662,7 +667,7 @@ class Utility extends Common\SysUtility
      */
     public static function setMeta($key, $value)
     {
-        $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
+        $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         if (self::getMeta($key)) {
             $sql = \sprintf('UPDATE %s SET conf_value = %s WHERE conf_name = %s', $xoopsDB->prefix('myref_config'), $xoopsDB->quoteString($value), $xoopsDB->quoteString($key));
         } else {
@@ -692,7 +697,7 @@ class Utility extends Common\SysUtility
     public static function existFieldname($table, $field)
     {
         $bRetVal = false;
-        $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
+        $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $sql     = 'SHOW COLUMNS FROM ' . $xoopsDB->prefix($table);
         $ret     = $xoopsDB->queryF($sql);
         while (list($m_fieldname) = $xoopsDB->fetchRow($ret)) {
@@ -716,7 +721,7 @@ class Utility extends Common\SysUtility
     {
         $bRetVal = false;
         //Verifies that a MySQL table exists
-        $xoopsDB  = \XoopsDatabaseFactory::getDatabaseConnection();
+        $xoopsDB  = XoopsDatabaseFactory::getDatabaseConnection();
         $realname = $xoopsDB->prefix($table);
         $sql      = 'SHOW TABLES FROM ' . XOOPS_DB_NAME;
         $ret      = $xoopsDB->queryF($sql);
