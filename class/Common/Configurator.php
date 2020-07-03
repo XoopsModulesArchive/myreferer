@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Myreferer\Common;
 
@@ -20,7 +20,6 @@ use function dirname;
  * @copyright   XOOPS Project (https://xoops.org)
  * @license     http://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      XOOPS Development Team
- * @package
  * @since       1.05
  */
 
@@ -32,15 +31,25 @@ use function dirname;
 class Configurator
 {
     public $name;
-    public $paths           = [];
-    public $uploadFolders   = [];
-    public $copyBlankFiles  = [];
+
+    public $paths = [];
+
+    public $uploadFolders = [];
+
+    public $copyBlankFiles = [];
+
     public $copyTestFolders = [];
+
     public $templateFolders = [];
-    public $oldFiles        = [];
-    public $oldFolders      = [];
-    public $renameTables    = [];
-    public $moduleStats     = [];
+
+    public $oldFiles = [];
+
+    public $oldFolders = [];
+
+    public $renameTables = [];
+
+    public $moduleStats = [];
+
     public $modCopyright;
 
     /**
@@ -49,23 +58,35 @@ class Configurator
     public function __construct()
     {
         //        $moduleDirName      = basename(dirname(dirname(__DIR__)));
+
         //        $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
         //        require dirname(dirname(__DIR__)) . '/config/config.php';
+
         //        $config = getConfig();
 
-        $config = require dirname(dirname(__DIR__)) . '/config/config.php';
+        $config = require dirname(__DIR__, 2) . '/config/config.php';
 
-        $this->name            = $config->name;
-        $this->paths           = $config->paths;
-        $this->uploadFolders   = $config->uploadFolders;
-        $this->copyBlankFiles  = $config->copyBlankFiles;
+        $this->name = $config->name;
+
+        $this->paths = $config->paths;
+
+        $this->uploadFolders = $config->uploadFolders;
+
+        $this->copyBlankFiles = $config->copyBlankFiles;
+
         $this->copyTestFolders = $config->copyTestFolders;
+
         $this->templateFolders = $config->templateFolders;
-        $this->oldFiles        = $config->oldFiles;
-        $this->oldFolders      = $config->oldFolders;
-        $this->renameTables    = $config->renameTables;
-        $this->moduleStats     = $config->moduleStats;
-        $this->modCopyright    = $config->modCopyright;
+
+        $this->oldFiles = $config->oldFiles;
+
+        $this->oldFolders = $config->oldFolders;
+
+        $this->renameTables = $config->renameTables;
+
+        $this->moduleStats = $config->moduleStats;
+
+        $this->modCopyright = $config->modCopyright;
     }
 }

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -9,7 +10,6 @@
  *
  * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
  * @license         GNU GPL 2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
- * @package
  * @since           2.5.9
  * @author          Michael Beck (aka Mamba)
  */
@@ -22,12 +22,12 @@ use XoopsModules\Myreferer;
 use XoopsModules\Myreferer\Common;
 use XoopsModules\Myreferer\Utility;
 
-require_once dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+require_once dirname(__DIR__, 3) . '/include/cp_header.php';
 require dirname(__DIR__) . '/preloads/autoloader.php';
 
 $op = Request::getCmd('op', '');
 
-$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirName = basename(dirname(__DIR__));
 $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
 $helper = Myreferer\Helper::getInstance();
@@ -40,10 +40,16 @@ switch ($op) {
             if (!$GLOBALS['xoopsSecurity']->check()) {
                 redirect_header('../admin/index.php', 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
             }
+
             loadSampleData();
         } else {
             xoops_cp_header();
-            xoops_confirm(['ok' => 1, 'op' => 'load'], 'index.php', sprintf(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA_OK')), constant('CO_' . $moduleDirNameUpper . '_' . 'CONFIRM'), true);
+
+            xoops_confirm([
+                              'ok' => 1,
+                              'op' => 'load'
+                          ], 'index.php', sprintf(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA_OK')), constant('CO_' . $moduleDirNameUpper . '_' . 'CONFIRM'), true);
+
             xoops_cp_footer();
         }
         break;
@@ -58,36 +64,46 @@ function loadSampleData()
 {
     global $xoopsConfig;
 
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName = basename(dirname(__DIR__));
+
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-    $utility      = new Myreferer\Utility();
+    $utility = new Myreferer\Utility();
+
     $configurator = new Common\Configurator();
 
     $tables = Helper::getHelper($moduleDirName)->getModule()->getInfo('tables');
 
     $language = 'english/';
+
     if (is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {
         $language = $xoopsConfig['language'] . '/';
     }
 
     foreach ($tables as $table) {
         $tabledata = Yaml::readWrapped($language . $table . '.yml');
+
         if (is_array($tabledata)) {
             TableLoad::truncateTable($table);
+
             TableLoad::loadTableFromArray($table, $tabledata);
         }
     }
 
     //  ---  COPY test folder files ---------------
+
     if (is_array($configurator->copyTestFolders) && count($configurator->copyTestFolders) > 0) {
         //        $file = __DIR__ . '/../testdata/images/';
+
         foreach (array_keys($configurator->copyTestFolders) as $i) {
-            $src  = $configurator->copyTestFolders[$i][0];
+            $src = $configurator->copyTestFolders[$i][0];
+
             $dest = $configurator->copyTestFolders[$i][1];
+
             $utility::rcopy($src, $dest);
         }
     }
+
     redirect_header('../admin/index.php', 1, constant('CO_' . $moduleDirNameUpper . '_' . 'SAMPLEDATA_SUCCESS'));
 }
 
@@ -95,21 +111,26 @@ function saveSampleData()
 {
     global $xoopsConfig;
 
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName = basename(dirname(__DIR__));
+
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
     $tables = Helper::getHelper($moduleDirName)->getModule()->getInfo('tables');
 
     $language = 'english/';
+
     if (is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {
         $language = $xoopsConfig['language'] . '/';
     }
 
     $languageFolder = __DIR__ . '/' . $language;
+
     if (!file_exists($languageFolder . '/')) {
         Utility::createFolder($languageFolder . '/');
     }
+
     $exportFolder = $languageFolder . '/Exports-' . date('Y-m-d-H-i-s') . '/';
+
     Utility::createFolder($exportFolder);
 
     foreach ($tables as $table) {
@@ -121,7 +142,8 @@ function saveSampleData()
 
 function exportSchema()
 {
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName = basename(dirname(__DIR__));
+
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
     try {
@@ -130,7 +152,7 @@ function exportSchema()
         //        $migrate->saveCurrentSchema();
         //
         //        redirect_header('../admin/index.php', 1, constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA_SUCCESS'));
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         exit(constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA_ERROR'));
     }
 }

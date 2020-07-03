@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Myreferer\Common;
 
@@ -18,34 +18,26 @@ namespace XoopsModules\Myreferer\Common;
  * @copyright   XOOPS Project (https://xoops.org)
  * @license     http://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      lucio <lucio.rota@gmail.com>
- * @package     Myreferer
- *
- * Example:
- * $breadcrumb = new Common\Breadcrumb();
- * $breadcrumb->addLink( 'bread 1', 'index1.php' );
- * $breadcrumb->addLink( 'bread 2', '' );
- * $breadcrumb->addLink( 'bread 3', 'index3.php' );
- * echo $breadcrumb->render();
  */
-
-use XoopsTpl;
-use xos_opal_Theme;
 
 use function basename;
 use function dirname;
 use function is_object;
+use XoopsTpl;
+use xos_opal_Theme;
 
 /**
  * Class Breadcrumb
  */
 class Breadcrumb
 {
-    public  $dirname;
+    public $dirname;
+
     private $bread = [];
 
     public function __construct()
     {
-        $this->dirname = basename(dirname(dirname(__DIR__)));
+        $this->dirname = basename(dirname(__DIR__, 2));
     }
 
     /**
@@ -69,13 +61,18 @@ class Breadcrumb
     {
         if (!isset($GLOBALS['xoTheme']) || !is_object($GLOBALS['xoTheme'])) {
             require $GLOBALS['xoops']->path('class/theme.php');
+
             $GLOBALS['xoTheme'] = new xos_opal_Theme();
         }
 
         require $GLOBALS['xoops']->path('class/template.php');
+
         $breadcrumbTpl = new XoopsTpl();
+
         $breadcrumbTpl->assign('breadcrumb', $this->bread);
+
         $html = $breadcrumbTpl->fetch('db:' . $this->dirname . '_common_breadcrumb.tpl');
+
         unset($breadcrumbTpl);
 
         return $html;

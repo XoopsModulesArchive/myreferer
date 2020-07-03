@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Myreferer\Common;
 
@@ -12,16 +12,11 @@ namespace XoopsModules\Myreferer\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-use DirectoryIterator;
-use Exception;
-use RuntimeException;
-use SplFileInfo;
-use XoopsUser;
-
 use function array_diff;
 use function closedir;
 use function copy;
 use function dir;
+use DirectoryIterator;
 use function file_exists;
 use function is_dir;
 use function is_file;
@@ -32,12 +27,14 @@ use function readdir;
 use function readlink;
 use function rename;
 use function rmdir;
+use RuntimeException;
 use function scandir;
+use const SCANDIR_SORT_NONE;
+use SplFileInfo;
 use function sprintf;
 use function symlink;
 use function unlink;
-
-use const SCANDIR_SORT_NONE;
+use XoopsUser;
 
 /**
  * @copyright   XOOPS Project (https://xoops.org)
@@ -51,7 +48,6 @@ trait FilesManagement
      *
      * @param string $folder The full path of the directory to check
      *
-     * @return void
      * @throws RuntimeException
      */
     public static function createFolder($folder)
@@ -64,7 +60,7 @@ trait FilesManagement
 
                 file_put_contents($folder . '/index.html', '<script>history.go(-1);</script>');
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             echo 'Caught exception: ', $e->getMessage(), '<br>';
         }
     }
@@ -86,10 +82,13 @@ trait FilesManagement
     public static function recurseCopy($src, $dst)
     {
         $dir = opendir($src);
+
         //        @mkdir($dst);
+
         if (!@mkdir($dst) && !is_dir($dst)) {
             throw new RuntimeException('The directory ' . $dst . ' could not be created.');
         }
+
         while (false !== ($file = readdir($dir))) {
             if (('.' !== $file) && ('..' !== $file)) {
                 if (is_dir($src . '/' . $file)) {
@@ -99,6 +98,7 @@ trait FilesManagement
                 }
             }
         }
+
         closedir($dir);
     }
 
@@ -114,16 +114,19 @@ trait FilesManagement
     public static function xcopy($source, $dest)
     {
         // Check for symlinks
+
         if (is_link($source)) {
             return symlink(readlink($source), $dest);
         }
 
         // Simple copy for a file
+
         if (is_file($source)) {
             return copy($source, $dest);
         }
 
         // Make destination directory
+
         if (!is_dir($dest)) {
             if (!mkdir($dest) && !is_dir($dest)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $dest));
@@ -131,17 +134,24 @@ trait FilesManagement
         }
 
         // Loop through the folder
+
         $dir = dir($source);
+
         if (@is_dir($dir)) {
             while (false !== $entry = $dir->read()) {
                 // Skip pointers
+
                 if ('.' === $entry || '..' === $entry) {
                     continue;
                 }
+
                 // Deep copy directories
+
                 self::xcopy("$source/$entry", "$dest/$entry");
             }
+
             // Clean up
+
             $dir->close();
         }
 
@@ -161,20 +171,31 @@ trait FilesManagement
     public static function deleteDirectory($src)
     {
         // Only continue if user is a 'global' Admin
+
         if (!($GLOBALS['xoopsUser'] instanceof XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
         }
 
         $success = true;
+
         // remove old files
+
         $dirInfo = new SplFileInfo($src);
+
         // validate is a directory
+
         if ($dirInfo->isDir()) {
-            $fileList = array_diff(scandir($src, SCANDIR_SORT_NONE), ['..', '.']);
+            $fileList = array_diff(scandir($src, SCANDIR_SORT_NONE), [
+                '..',
+                '.'
+            ]);
+
             foreach ($fileList as $k => $v) {
                 $fileInfo = new SplFileInfo("{$src}/{$v}");
+
                 if ($fileInfo->isDir()) {
                     // recursively handle subdirectories
+
                     if (!$success = self::deleteDirectory($fileInfo->getRealPath())) {
                         break;
                     }
@@ -182,12 +203,15 @@ trait FilesManagement
                     break;
                 }
             }
+
             // now delete this (sub)directory if all the files are gone
+
             if ($success) {
                 $success = rmdir($dirInfo->getRealPath());
             }
         } else {
             // input is not a valid directory
+
             $success = false;
         }
 
@@ -206,11 +230,13 @@ trait FilesManagement
     public static function rrmdir($src)
     {
         // Only continue if user is a 'global' Admin
+
         if (!($GLOBALS['xoopsUser'] instanceof XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
         }
 
         // If source is not a directory stop processing
+
         if (!is_dir($src)) {
             return false;
         }
@@ -218,19 +244,25 @@ trait FilesManagement
         $success = true;
 
         // Open the source directory to read in files
+
         $iterator = new DirectoryIterator($src);
+
         foreach ($iterator as $fObj) {
             if ($fObj->isFile()) {
                 $filename = $fObj->getPathname();
-                $fObj     = null; // clear this iterator object to close the file
+
+                $fObj = null; // clear this iterator object to close the file
+
                 if (!unlink($filename)) {
                     return false; // couldn't delete the file
                 }
             } elseif (!$fObj->isDot() && $fObj->isDir()) {
                 // Try recursively on directory
+
                 self::rrmdir($fObj->getPathname());
             }
         }
+
         $iterator = null;   // clear iterator Obj to close file/directory
         return rmdir($src); // remove the directory & return results
     }
@@ -246,31 +278,39 @@ trait FilesManagement
     public static function rmove($src, $dest)
     {
         // Only continue if user is a 'global' Admin
+
         if (!($GLOBALS['xoopsUser'] instanceof XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
         }
 
         // If source is not a directory stop processing
+
         if (!is_dir($src)) {
             return false;
         }
 
         // If the destination directory does not exist and could not be created stop processing
+
         if (!is_dir($dest) && !mkdir($dest) && !is_dir($dest)) {
             return false;
         }
 
         // Open the source directory to read in files
+
         $iterator = new DirectoryIterator($src);
+
         foreach ($iterator as $fObj) {
             if ($fObj->isFile()) {
                 rename($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());
             } elseif (!$fObj->isDot() && $fObj->isDir()) {
                 // Try recursively on directory
+
                 self::rmove($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());
+
                 //                rmdir($fObj->getPath()); // now delete the directory
             }
         }
+
         $iterator = null;   // clear iterator Obj to close file/directory
         return rmdir($src); // remove the directory & return results
     }
@@ -289,22 +329,27 @@ trait FilesManagement
     public static function rcopy($src, $dest)
     {
         // Only continue if user is a 'global' Admin
+
         if (!($GLOBALS['xoopsUser'] instanceof XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
         }
 
         // If source is not a directory stop processing
+
         if (!is_dir($src)) {
             return false;
         }
 
         // If the destination directory does not exist and could not be created stop processing
+
         if (!is_dir($dest) && !mkdir($dest) && !is_dir($dest)) {
             return false;
         }
 
         // Open the source directory to read in files
+
         $iterator = new DirectoryIterator($src);
+
         foreach ($iterator as $fObj) {
             if ($fObj->isFile()) {
                 copy($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());

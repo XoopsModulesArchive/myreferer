@@ -1,16 +1,17 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
  *            - DuGris (www.dugris.info)
  */
 
-// myref_config table
+// myreferer_config table
 define('_MYREFERER_KEYWORD_MIN', 'Keyword minimum size');
 define('_MYREFERER_KEYWORD_MIN_DSC', '');
 
@@ -33,13 +34,16 @@ define('_MYREFERER_KEYWORD_BLACKLIST', 'Keywords Blacklist');
 define('_MYREFERER_KEYWORD_BLACKLIST_DSC', 'Specify which keywords are blacklisted.<br>Keywords must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
 
 define('_MYREFERER_MODULE_BLACKLIST', 'Modules Blacklist');
-define('_MYREFERER_MODULE_BLACKLIST_DSC', 'Specify which modules are blacklisted.<br>Directories must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
+define('_MYREFERER_MODULE_BLACKLIST_DSC',
+       'Specify which modules are blacklisted.<br>Directories must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
 
 define('_MYREFERER_SEARCH_BLACKLIST', 'Search Engines Blacklist');
-define('_MYREFERER_SEARCH_BLACKLIST_DSC', 'Specify which search engines are blacklisted.<br>Search engine must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: google.it<b><span style="color: #CC0000; ">|</span></b>sucheaol.aol.de');
+define('_MYREFERER_SEARCH_BLACKLIST_DSC',
+       'Specify which search engines are blacklisted.<br>Search engine must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: google.it<b><span style="color: #CC0000; ">|</span></b>sucheaol.aol.de');
 
 define('_MYREFERER_REFERER_BLACKLIST', 'Referers Blacklist');
-define('_MYREFERER_REFERER_BLACKLIST_DSC', 'Specify which referer are blacklisted.<br>Referers must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: 127.0.0.1<b><span style="color: #CC0000; ">|</span></b>mail.google.com');
+define('_MYREFERER_REFERER_BLACKLIST_DSC',
+       'Specify which referer are blacklisted.<br>Referers must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: 127.0.0.1<b><span style="color: #CC0000; ">|</span></b>mail.google.com');
 
 define('_MYREFERER_NEW_BOT_SMAIL', 'Activate warning by mail when a new robot is visiting the site');
 define('_MYREFERER_NEW_BOT_SMAIL_DSC', '');
@@ -54,7 +58,8 @@ define('_MYREFERER_PAGE_PROHIBIT', 'Redirection page for blacklisted bots');
 define('_MYREFERER_PAGE_PROHIBIT_DSC', '');
 
 define('_MYREFERER_ROBOTS_PROHIBIT', 'Forbiden robots');
-define('_MYREFERER_ROBOTS_PROHIBIT_DSC', 'This option allow to forbidden specified robots.<br>Robots must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: fileDL.exe<b><span style="color: #CC0000; ">|</span></b>Lynx');
+define('_MYREFERER_ROBOTS_PROHIBIT_DSC',
+       'This option allow to forbidden specified robots.<br>Robots must be separated by  <b><span style="color: #CC0000; ">|</span></b>.<br>For instance: fileDL.exe<b><span style="color: #CC0000; ">|</span></b>Lynx');
 
 define('_MYREFERER_STATS_ALL', 'All');
 define('_MYREFERER_STATS_TOP', 'Top');
@@ -104,7 +109,7 @@ define('_MYREFERER_ROBOTS', 'Robots configuration');
 //define('_MYREFERER_STATS', 'Statistics configuration');
 define('_MYREFERER_USERVISIT', 'USER VISIT Configuration');
 
-$moduleDirName      = basename(dirname(dirname(__DIR__)));
+$moduleDirName      = basename(dirname(__DIR__, 2));
 $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
 define('CO_' . $moduleDirNameUpper . '_GDLIBSTATUS', 'GD library support: ');
@@ -142,7 +147,7 @@ define('CO_' . $moduleDirNameUpper . '_ERROR_BAD_REMOVE', 'Could not delete %s')
 define('CO_' . $moduleDirNameUpper . '_ERROR_NO_PLUGIN', 'Could not load plugin');
 
 //Help
-define('CO_' . $moduleDirNameUpper . '_DIRNAME', basename(dirname(dirname(__DIR__))));
+define('CO_' . $moduleDirNameUpper . '_DIRNAME', basename(dirname(__DIR__, 2)));
 define('CO_' . $moduleDirNameUpper . '_HELP_HEADER', __DIR__ . '/help/helpheader.tpl');
 define('CO_' . $moduleDirNameUpper . '_BACK_2_ADMIN', 'Back to Administration of ');
 define('CO_' . $moduleDirNameUpper . '_OVERVIEW', 'Overview');

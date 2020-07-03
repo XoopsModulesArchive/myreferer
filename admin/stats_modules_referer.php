@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -28,7 +28,8 @@ $search = $_POST['search'] ?? ($_GET['search'] ?? '');
 $week = $_POST['week'] ?? ($_GET['week'] ?? 0);
 if ($week) {
     $where_week = 'AND visit_tmp > 0';
-    $all        = '';
+
+    $all = '';
 }
 
 // $this_date = date('m'); $this_name = _MD_MYREFERER_MONTH; // Month
@@ -38,6 +39,7 @@ $this_name = _MD_MYREFERER_WEEK; // Week
 
 if ('blacklist' === $op) {
     $all = '<img src="../assets/images/icon/off.gif" alt="' . _MD_MYREFERER_HIDDEN . '" align="absmiddle">&nbsp;';
+
     if (1 == $week) {
         $all .= "$this_name : $this_date";
     } else {
@@ -53,6 +55,7 @@ if ('blacklist' === $op) {
     $where = 'hide = 1';
 } elseif ('whitelist' === $op) {
     $all = '<img src="../assets/images/icon/on.gif" alt="' . _MD_MYREFERER_DISPLAYED . '" align="absmiddle">&nbsp;';
+
     if (1 == $week) {
         $all .= "$this_name : $this_date";
     } else {
@@ -68,6 +71,7 @@ if ('blacklist' === $op) {
     $where = 'hide = 0';
 } else {
     $all = '<img src="../assets/images/icon/all.gif" alt="' . _MD_MYREFERER_ALL . '" align="absmiddle">&nbsp;';
+
     if (1 == $week) {
         $all .= "$this_name : $this_date";
     } else {
@@ -89,10 +93,7 @@ OpenTable();
 
 // Display informations
 echo "<table width='100%'><tr><td>";
-echo '<b>'
-     . $xoopsConfig['sitename']
-     . "</b><br><a href='stats_modules_referer.php?ord=$ord&search=$search&week=&op=$op&startart=$startart'>"
-     . _MD_MYREFERER_ALL
+echo '<b>' . $xoopsConfig['sitename'] . "</b><br><a href='stats_modules_referer.php?ord=$ord&search=$search&week=&op=$op&startart=$startart'>" . _MD_MYREFERER_ALL
      . "</a> | <a href='stats_modules_referer.php?ord=$ord&search=$search&week=1$&op=$op&startart=$startart'>$this_name : $this_date </a> | $black";
 echo "</td><td align='right'>";
 Utility::search($ord, $search, $engine, $week, $startart);
@@ -101,7 +102,7 @@ echo '</td></tr></table>';
 
 // Queries
 // Query total
-$sql     = 'SELECT page, referer, hide FROM ' . $xoopsDB->prefix('myref_referer') . " WHERE $where $where_week AND referer LIKE '%$search%' AND engine = 0 ORDER BY page ASC";
+$sql     = 'SELECT page, referer, hide FROM ' . $xoopsDB->prefix('myreferer_referer') . " WHERE $where $where_week AND referer LIKE '%$search%' AND engine = 0 ORDER BY page ASC";
 $result  = $xoopsDB->query($sql);
 $counter = $xoopsDB->queryF($sql);
 $count   = @mysqli_num_rows($counter);
@@ -112,12 +113,14 @@ if (0 == $count) {
     $head = 1;
 
     echo "<br><div style='text-align:center;'><b>$all</b></div>";
+
     echo '<table cellpadding="1" cellspacing="1" border="0" class="bg2" width="98%"><tr><th colspan="2">
 		  <a href="' . XOOPS_URL . '" target="_blank">Home</a>
 	      </th></tr><tr><td>';
 
     while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
         $count++;
+
         $li_in = '<br> ';
 
         if ($myrow['hide']) {
@@ -127,34 +130,48 @@ if (0 == $count) {
         }
 
         if ($page != $myrow['page']) {
-            $page      = str_replace(XOOPS_URL, '', 'http://' . $myrow['page']);
-            $page      = str_replace('/modules', '', $page);
-            $page      = explode('/', $page);
-            $page_url  = explode('PHPSESSID', $myrow['page']);
+            $page = str_replace(XOOPS_URL, '', 'http://' . $myrow['page']);
+
+            $page = str_replace('/modules', '', $page);
+
+            $page = explode('/', $page);
+
+            $page_url = explode('PHPSESSID', $myrow['page']);
+
             $page1_tmp = $page[1];
+
             if ($page_tmp != $page[1] and '' != $page[1]) {
                 echo '</td><td>' . $count . '</td></tr>';
+
                 echo '<tr class="bg3"><th colspan="3"><a href="' . XOOPS_URL . '/modules/' . $page[1] . '/" target="_blank">' . mb_strtoupper($page[1]) . '</a></th></tr>';
+
                 $page_tmp = $page[1];
-                $count    = 0;
-                $head     = 1;
+
+                $count = 0;
+
+                $head = 1;
             }
 
             if (!$head) {
                 echo '</td><td>' . $count . '</td></tr>';
             }
 
-            $head  = 0;
+            $head = 0;
+
             $li_in = '<tr class="bg4"><td align="left"><a href="http://' . $myrow['page'] . '" target="_blank" title="' . $myrow['page'] . '">/' . $page[1] . '/' . $page[2] . '</td><td>';
+
             $count = 0;
         }
+
         echo $li_in . '<a href="http://' . $myrow['referer'] . '" target="_blank">' . $font_in . $myrow['referer'] . '</font></a>';
 
         $page = $myrow['page'];
     }
+
     if (!$head) {
         echo '</td><td>' . $count . '</td></tr>';
     }
+
     echo '</td></tr></table>';
 }
 CloseTable();

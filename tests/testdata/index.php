@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -9,7 +10,6 @@
  *
  * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
  * @license         GNU GPL 2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
- * @package
  * @since           2.5.9
  * @author          Michael Beck (aka Mamba)
  */
@@ -33,10 +33,13 @@ switch ($op) {
 function loadSampleData()
 {
     //    $moduleDirName = basename(dirname(dirname(__DIR__)));
+
     xoops_loadLanguage('comment');
+
     $items = Yaml::readWrapped('quotes_data.yml');
 
     TableLoad::truncateTable('randomquote_quotes');
+
     TableLoad::loadTableFromArray('randomquote_quotes', $items);
 
     redirect_header('../admin/index.php', 1, _CM_ACTIVE);

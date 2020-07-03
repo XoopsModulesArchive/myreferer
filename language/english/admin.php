@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -123,4 +123,3 @@ define('_MD_MYREFERER_DELETE_USER', 'Confirm the deletion of data concerning thi
 define('_MD_MYREFERER_RESET_DATAS', 'Reset weekly visits');
 define('_MD_MYREFERER_RESET_DATA', 'Confirm the reset of the visits of the week');
 define('_MD_MYREFERER_RESET', 'Reset');
-

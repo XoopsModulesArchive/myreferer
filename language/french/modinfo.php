@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -50,12 +50,9 @@ define('_MI_MYREFERER_ORDER_VISIT', 'Visites');
 define('_MI_MYREFERER_PERPAGE', 'Nombre de r�sultats');
 define('_MI_MYREFERER_PERPAGE_DSC', 'D�termine le nombre de r�sultats � afficher par page.');
 define('_MI_MYREFERER_TAG_NEW', 'Nouveau');
-define(
-    '_MI_MYREFERER_TAG_NEW_DSC',
-    "1) Combien de temps le r�f�rant est consid�r� comme nouveau (en jours).<br>
+define('_MI_MYREFERER_TAG_NEW_DSC', "1) Combien de temps le r�f�rant est consid�r� comme nouveau (en jours).<br>
 
-2) Combien de visites avant qu'un r�f�rant ne s'affiche en partie publique ou utilisable dans le metagen."
-);
+2) Combien de visites avant qu'un r�f�rant ne s'affiche en partie publique ou utilisable dans le metagen.");
 define('_MI_MYREFERER_TAG_POP', 'Populaire');
 define('_MI_MYREFERER_TAG_POP_DSC', "Combien de visites pour qu'un r�f�rant soit consid�r� comme populaire (en hits).");
 define('_MI_MYREFERER_TODAY', 'Donn�es du jour');

@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -21,31 +21,47 @@ $confirm = $_POST['confirm'] ?? ($_GET['confirm'] ?? 0);
 // Delete operation
 if ('del' === $op and $id) {
     if ($confirm) {
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_users') . " WHERE id = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_users') . " WHERE id = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_users_stats') . " WHERE userssid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_users_stats') . " WHERE userssid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_users_pages') . " WHERE usersid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_users_pages') . " WHERE usersid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_users_pages_stats') . " WHERE usersid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_users_pages_stats') . " WHERE usersid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
         echo "<script type='text/javascript'>\n";
+
         echo "self.close();\n";
+
         echo '</script>';
     } else {
         require_once __DIR__ . '/detail_header.php';
 
-        $sql    = 'SELECT p.uname FROM ' . $xoopsDB->prefix('myref_users') . ' f LEFT JOIN ' . $xoopsDB->prefix('users') . " p on f.user = p.uid WHERE id=$id";
+        $sql = 'SELECT p.uname FROM ' . $xoopsDB->prefix('myreferer_users') . ' f LEFT JOIN ' . $xoopsDB->prefix('users') . " p on f.user = p.uid WHERE id=$id";
+
         $result = $xoopsDB->query($sql);
+
         [$name] = $xoopsDB->fetchRow($result);
 
-        xoops_confirm(['op' => $op, 'id' => $id, 'confirm' => 1, 'ord' => $ord, 'search' => $search, 'week' => $week, 'start' => $start], 'detail_visitors.php', _MD_MYREFERER_DELETE_ROBOT . ' <br>' . '<br>' . $name . '<br>', _MD_MYREFERER_DELETE);
+        xoops_confirm(['op'      => $op,
+                       'id'      => $id,
+                       'confirm' => 1,
+                       'ord'     => $ord,
+                       'search'  => $search,
+                       'week'    => $week,
+                       'start'   => $start
+                      ], 'detail_visitors.php', _MD_MYREFERER_DELETE_ROBOT . ' <br>' . '<br>' . $name . '<br>', _MD_MYREFERER_DELETE);
 
         require_once __DIR__ . '/detail_footer.php';
+
         exit();
     }
 }
@@ -57,7 +73,9 @@ if (('h' === $op or 'd' === $op) and $id) {
     } else {
         $hide = 1;
     }
-    $sql = 'UPDATE ' . $xoopsDB->prefix('myref_users') . " SET hide = '$hide' WHERE id = '$id'";
+
+    $sql = 'UPDATE ' . $xoopsDB->prefix('myreferer_users') . " SET hide = '$hide' WHERE id = '$id'";
+
     $xoopsDB->queryF($sql);
 }
 
@@ -68,12 +86,14 @@ if (('tracker_on' === $op or 'tracker_off' === $op) and $id) {
     } else {
         $tracker = 0;
     }
-    $sql = 'UPDATE ' . $xoopsDB->prefix('myref_users') . " SET tracker = '$tracker' WHERE id = '$id'";
+
+    $sql = 'UPDATE ' . $xoopsDB->prefix('myreferer_users') . " SET tracker = '$tracker' WHERE id = '$id'";
+
     $xoopsDB->queryF($sql);
 }
 
 // $this_date = date('W'); $this_name = _MD_MYREFERER_WEEK; // Week
-$query   = 'SELECT f.*, p.uname, p.email, p.user_regdate, p.last_login FROM ' . $xoopsDB->prefix('myref_users') . ' f LEFT JOIN ' . $xoopsDB->prefix('users') . " p on f.user = p.uid WHERE id=$id";
+$query   = 'SELECT f.*, p.uname, p.email, p.user_regdate, p.last_login FROM ' . $xoopsDB->prefix('myreferer_users') . ' f LEFT JOIN ' . $xoopsDB->prefix('users') . " p on f.user = p.uid WHERE id=$id";
 $counter = $xoopsDB->queryF($query);
 $count   = @mysqli_num_rows($counter);
 
@@ -88,9 +108,11 @@ if (0 == $count) {
     echo '<div align="center">' . _MD_MYREFERER_NOVISIT . '</div>';
 } else {
     $result = $xoopsDB->queryF($query);
-    $myrow  = $xoopsDB->fetchArray($result);
+
+    $myrow = $xoopsDB->fetchArray($result);
 
     // Admin
+
     $delete = "<a href='detail_visitors.php?op=del&id=" . $myrow['id'] . "'>
 			<img src='../assets/images/icon/delete.gif' alt='" . _DELETE . "'></a>";
 
@@ -111,6 +133,7 @@ if (0 == $count) {
     }
 
     echo '<div align="right" style="border:1px; padding:2px; "><b>' . _MD_MYREFERER_ADMIN . '</b>' . $status . '&nbsp;' . $tracker . '&nbsp;' . $delete . '</div>';
+
     // Admin
 
     echo '<div align="center">
@@ -132,17 +155,25 @@ if (0 == $count) {
     }
 
     // Display weekly stats about visits and limit number to 2
-    $visit     = $myrow['visit'];
-    $page      = $myrow['page'];
-    $date      = $myrow['date'];
+
+    $visit = $myrow['visit'];
+
+    $page = $myrow['page'];
+
+    $date = $myrow['date'];
+
     $startdate = $myrow['startdate'];
 
     $total_day = ($date - $startdate) / (60 * 60 * 24);
-    $day_stat  = ($visit / $total_day);
-    $tmp       = explode('.', $day_stat);
+
+    $day_stat = $visit / $total_day;
+
+    $tmp = explode('.', $day_stat);
+
     if ($tmp[1]) {
         $tmp[1] = '.' . mb_substr($tmp[1], 0, 2);
     }
+
     $day_stat = abs($tmp[0] . $tmp[1]);
 
     if ($day_stat <= $visit and $day_stat > 0) {
@@ -152,36 +183,50 @@ if (0 == $count) {
     }
 
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_ID . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $myrow['id'] . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _US_USERNAME . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $myrow['uname'] . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _US_EMAIL . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $myrow['email'] . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _US_MEMBERSINCE . '</b></nobr></td><td colspan="2" style="text-align:left;">' . formatTimestamp($myrow['user_regdate'], 's') . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _US_LOGOUT . '</b></nobr></td><td colspan="2" style="text-align:left;">' . formatTimestamp($myrow['last_login'], 's') . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_TOTAL . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $stats . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_WEEK . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $myrow['visit_tmp'] . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_FIRST . '</b></nobr></td><td colspan="2" style="text-align:left;">' . formatTimestamp($myrow['startdate']) . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_LAST . '</b></nobr></td><td colspan="2" style="text-align:left;">' . formatTimestamp($date) . '</td></tr>';
+
     echo '<tr><td style="text-align:left;"><nobr><b>' . _MD_MYREFERER_STATS_STATUS . '</b></nobr></td><td colspan="2" style="text-align:left;">' . $status . '&nbsp;' . $tracker . '</td></tr>';
 
     // pages viewed
-    $page_query = 'SELECT f.usersid, f.pagesid, p.page, f.visit, f.visit_tmp, f.date, p.hide FROM ' . $xoopsDB->prefix('myref_users_pages') . ' f LEFT JOIN ' . $xoopsDB->prefix('myref_pages') . ' p on f.pagesid = p.id
+
+    $page_query = 'SELECT f.usersid, f.pagesid, p.page, f.visit, f.visit_tmp, f.date, p.hide FROM ' . $xoopsDB->prefix('myreferer_users_pages') . ' f LEFT JOIN ' . $xoopsDB->prefix('myreferer_pages') . ' p on f.pagesid = p.id
                   WHERE f.usersid = ' . $myrow['id'] . ' ORDER BY f.date DESC';
 
     $page_result = $xoopsDB->queryF($page_query);
 
     echo '<tr><th colspan="3" style="align:center;"><b>' . _MD_MYREFERER_PAGE . '</b></th></tr>';
+
     echo '<tr><td colspan="3" style="text-align:left;">';
+
     while (false !== ($page_myrow = $xoopsDB->fetchArray($page_result))) {
         if ($page_myrow['hide']) {
             $font_in = '<span style="color: #ff0000; ">';
         } else {
             $font_in = '<span style="color: #008000; ">';
         }
+
         preg_match('/(' . str_replace('/', "\/", XOOPS_URL) . ')(.*)/i', 'http://' . $page_myrow['page'], $pages);
 
         echo formatTimestamp($page_myrow['date']) . ' :&nbsp;<a target="thepage" href="http://' . $page_myrow['page'] . '">' . $font_in . $pages[2] . '</font></a> [' . $page_myrow['visit_tmp'] . '/<b>' . $page_myrow['visit'] . '</b>]<br> ';
     }
 
     echo '</tr>';
+
     echo '</table>';
 } // if result
 

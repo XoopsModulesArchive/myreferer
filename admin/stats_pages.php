@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -39,50 +39,74 @@ $confirm = $_POST['confirm'] ?? ($_GET['confirm'] ?? 0);
 // Delete operation
 if ('del' === $op and $id) {
     if ($confirm) {
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_pages') . " WHERE id = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_pages') . " WHERE id = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_pages_stats') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_pages_stats') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_query_pages') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_query_pages') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_query_pages_stats') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_query_pages_stats') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_referer_pages') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_referer_pages') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_referer_pages_stats') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_referer_pages_stats') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_robots_pages') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_robots_pages') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_robots_pages_stats') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_robots_pages_stats') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_users_pages') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_users_pages') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
-        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_users_pages_stats') . " WHERE pagesid = '$id' ";
+        $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_users_pages_stats') . " WHERE pagesid = '$id' ";
+
         $xoopsDB->queryF($sql);
 
         redirect_header('stats_pages.php?ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=&startart=' . $startart, 1, _MD_MYREFERER_CLEANED);
+
         exit();
     }
+
     // Utility::getAdminMenu(0, _MD_MYREFERER_STATS);
 
-    $sql    = 'SELECT page FROM ' . $xoopsDB->prefix('myref_pages') . " WHERE id=$id";
+    $sql = 'SELECT page FROM ' . $xoopsDB->prefix('myreferer_pages') . " WHERE id=$id";
+
     $result = $xoopsDB->query($sql);
+
     [$name] = $xoopsDB->fetchRow($result);
+
     preg_match('/(' . str_replace('/', "\/", XOOPS_URL) . ')(.*)/i', 'http://' . $name, $mypage);
+
     $name = $mypage[2];
 
-    xoops_confirm(['op' => $op, 'id' => $id, 'confirm' => 1, 'ord' => $ord, 'search' => $search, 'week' => $week, 'start' => $start], 'stats_pages.php', _MD_MYREFERER_DELETE_PAGE . ' <br>' . '<br>' . $name . '<br>', _MD_MYREFERER_DELETE);
+    xoops_confirm(['op'      => $op,
+                   'id'      => $id,
+                   'confirm' => 1,
+                   'ord'     => $ord,
+                   'search'  => $search,
+                   'week'    => $week,
+                   'start'   => $start
+                  ], 'stats_pages.php', _MD_MYREFERER_DELETE_PAGE . ' <br>' . '<br>' . $name . '<br>', _MD_MYREFERER_DELETE);
 
     xoops_cp_footer();
+
     exit();
 }
 
@@ -93,10 +117,13 @@ if (('h' === $op or 'd' === $op) and $id) {
     } else {
         $hide = 0;
     }
-    $sql = 'UPDATE ' . $xoopsDB->prefix('myref_pages') . " SET hide = '$hide' WHERE id = '$id'";
+
+    $sql = 'UPDATE ' . $xoopsDB->prefix('myreferer_pages') . " SET hide = '$hide' WHERE id = '$id'";
+
     $xoopsDB->queryF($sql);
 
     redirect_header('stats_pages.php?ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=whitelist&startart=' . $startart, 0, _MD_MYREFERER_UPDATED, true);
+
     exit();
 }
 
@@ -109,7 +136,8 @@ $all = _MD_MYREFERER_ALL;
 
 if ($week) {
     $where_week = 'AND visit_tmp > 0';
-    $all        = '';
+
+    $all = '';
 }
 if ('blacklist' === $op) {
     $where = 'hide = 1';
@@ -120,38 +148,50 @@ if ('blacklist' === $op) {
 }
 
 if ('' == $ord) {
-    $ordre      = 'visit_tmp';
+    $ordre = 'visit_tmp';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_VISITS . ' / ' . _MD_MYREFERER_WEEK;
+
+    $ord_text = _MD_MYREFERER_VISITS . ' / ' . _MD_MYREFERER_WEEK;
 }
 if ('1' == $ord) {
-    $ordre      = 'id';
+    $ordre = 'id';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_LATEST;
+
+    $ord_text = _MD_MYREFERER_LATEST;
 }
 if ('2' == $ord) {
-    $ordre      = $xoopsModuleConfig['order'];
+    $ordre = $xoopsModuleConfig['order'];
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_VISITS;
+
+    $ord_text = _MD_MYREFERER_VISITS;
 }
 if ('3' == $ord) {
-    $ordre      = 'page';
+    $ordre = 'page';
+
     $sort_ordre = 'ASC';
-    $ord_text   = _MD_MYREFERER_PAGE;
+
+    $ord_text = _MD_MYREFERER_PAGE;
 }
 if ('4' == $ord) {
-    $ordre      = 'date';
+    $ordre = 'date';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_DATE;
+
+    $ord_text = _MD_MYREFERER_DATE;
 }
 
 if ('blacklist' === $op) {
     $all = '<img src="../assets/images/icon/off.gif" alt="' . _MD_MYREFERER_HIDDEN . '" align="absmiddle">&nbsp;';
+
     if (1 == $week) {
         $all .= "$this_name : $this_date";
     } else {
         $all .= _MD_MYREFERER_ALL;
     }
+
     $black = '<a href="stats_pages.php?ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=&startart=' . $startart . '">
     		<img src="../assets/images/icon/all.gif" alt="' . _MD_MYREFERER_ALL . '" align="absmiddle"></a>&nbsp;';
 
@@ -159,11 +199,13 @@ if ('blacklist' === $op) {
 			<img src="../assets/images/icon/on.gif" alt="' . _MD_MYREFERER_DISPLAYED . '" align="absmiddle"></a>&nbsp;';
 } elseif ('whitelist' === $op) {
     $all = '<img src="../assets/images/icon/on.gif" alt="' . _MD_MYREFERER_DISPLAYED . '" align="absmiddle">&nbsp;';
+
     if (1 == $week) {
         $all .= "$this_name : $this_date";
     } else {
         $all .= _MD_MYREFERER_ALL;
     }
+
     $black = '<a href="stats_pages.php?ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=&startart=' . $startart . '">
     		<img src="../assets/images/icon/all.gif" alt="' . _MD_MYREFERER_ALL . '" align="absmiddle"></a>&nbsp;';
 
@@ -171,11 +213,13 @@ if ('blacklist' === $op) {
 			<img src="../assets/images/icon/off.gif" alt="' . _MD_MYREFERER_HIDDEN . '" align="absmiddle"></a>';
 } else {
     $all = '<img src="../assets/images/icon/all.gif" alt="' . _MD_MYREFERER_ALL . '" align="absmiddle">&nbsp;';
+
     if (1 == $week) {
         $all .= "$this_name : $this_date";
     } else {
         $all .= _MD_MYREFERER_ALL;
     }
+
     $black = '<a href="stats_pages.php?ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=whitelist&startart=' . $startart . '">
 			<img src="../assets/images/icon/on.gif" alt="' . _MD_MYREFERER_DISPLAYED . '" align="absmiddle"></a>&nbsp;';
 
@@ -189,13 +233,14 @@ OpenTable();
 
 // Display informations
 echo "<table width='100%'><tr><td>";
-echo '<b>' . $xoopsConfig['sitename'] . "</b><br><a href='stats_pages.php?ord=$ord&search=$search&week=0&op=$op&startart=$startart'>" . _MD_MYREFERER_ALL . "</a> | <a href='stats_pages.php?ord=$ord&search=$search&week=1&op=$op&startart=$startart'>$this_name : $this_date </a> | $black";
+echo '<b>' . $xoopsConfig['sitename'] . "</b><br><a href='stats_pages.php?ord=$ord&search=$search&week=0&op=$op&startart=$startart'>" . _MD_MYREFERER_ALL
+     . "</a> | <a href='stats_pages.php?ord=$ord&search=$search&week=1&op=$op&startart=$startart'>$this_name : $this_date </a> | $black";
 echo "</td><td align='right'>";
 Utility::search($ord, $search, $engine, $week, $startart);
 echo '</td></tr></table>';
 // Display informations
 
-$pages = '	SELECT * FROM ' . $xoopsDB->prefix('myref_pages') . "
+$pages = '	SELECT * FROM ' . $xoopsDB->prefix('myreferer_pages') . "
 		WHERE $where $where_week AND page LIKE '%$search%'
 		ORDER BY $ordre $sort_ordre";
 
@@ -205,11 +250,14 @@ $count   = @mysqli_num_rows($counter);
 if (0 == $count) {
     echo _MD_MYREFERER_NOVISIT . '<p>';
 } else {
-    $result  = $xoopsDB->queryF($pages, $xoopsModuleConfig['perpage'], $startart);
+    $result = $xoopsDB->queryF($pages, $xoopsModuleConfig['perpage'], $startart);
+
     $pagenav = new XoopsPageNav($count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&search=' . $search . '&week=' . $week . '&op=' . $op);
 
     echo "<br><div style='text-align:center;'><b>$all</b> " . _MD_MYREFERER_RANKING . " <b>$ord_text</b> ($count)</div>";
+
     echo "<div style='text-align:right; width:95%;'>" . $pagenav->renderNav() . '</div>';
+
     echo "<div align='center'>
 		  <table border='0' cellpadding='4' cellspacing='1' class='bg2' width='90%'>
           <tr class='bg3'>
@@ -224,10 +272,13 @@ if (0 == $count) {
           </tr>';
 
     $i = $startart;
+
     while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
         if ($myrow['date']) {
             //			$data_date = formatTimestamp($myrow["date"],'m');
+
             $data_date = formatTimestamp($myrow['date'], 'W');
+
             //			$data_date = formatTimestamp($myrow["date"],'z');
             // 			$data_date = formatTimestamp($myrow["date"],'r');
         } else {
@@ -241,13 +292,16 @@ if (0 == $count) {
         }
 
         preg_match('/(' . str_replace('/', "\/", XOOPS_URL) . ')(.*)/i', 'http://' . $myrow['page'], $mypage);
+
         $thepage = $mypage[2];
+
         if (preg_match("/(.*)(\?xoops_redirect)(.*)/i", $mypage[2], $tmppage)) {
             $thepage = $tmppage[1];
         }
 
         $detail = "<a onclick=\"window.open('', 'wclose', 'width=800, height=500, toolbar=no, scrollbars=yes, status=no, resizable=no, fullscreen=no, titlebar=no, left=10, top=10', 'false')\"  href='detail_pages.php?id=" . $myrow['id'] . "' target='wclose'>
 				<img src='../assets/images/icon/detail.gif' alt='" . _MD_MYREFERER_MORE . "'></a>";
+
         $delete = "<a href='stats_pages.php?ord=$ord&search=$search&week=$week&op=del&id=" . $myrow['id'] . "'>
 				<img src='../assets/images/icon/delete.gif' alt='" . _DELETE . "'></a>";
 
@@ -264,6 +318,7 @@ if (0 == $count) {
         } else {
             $time = $myrow['date'];
         }
+
         // setlocale('LC_TIME', 'french');
 
         if ($this_date == $data_date) {
@@ -273,9 +328,11 @@ if (0 == $count) {
         }
 
         $i++;
+
         if (mb_strlen($thepage) > 60) {
             $thepage = mb_substr($thepage, 0, 60) . '[...]';
         }
+
         echo "<tr $bg>
            	  <td align='center'>	$i</a></td>
               <td align='center'><b>" . $myrow['visit_tmp'] . '</b> (' . $myrow['visit'] . ")	</td>
@@ -284,8 +341,11 @@ if (0 == $count) {
               <td align='center'>	<nobr>$detail&nbsp;$delete&nbsp;$status</nobr>	</td>
               </tr>";
     }
+
     echo '</table></div>';
+
     echo '<div style="text-align:center;">' . $pagenav->renderNav() . '</div>';
+
     echo "<br>\n";
 }
 CloseTable();

@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -18,7 +18,7 @@ define('_MI_MYREFERER_ADMIN', 'Dashboard');
 define('_MI_MYREFERER_CONFIG', 'Configuration');
 define('_MI_MYREFERER_META', 'Meta Generator');
 define('_MI_MYREFERER_CLEAN', 'Database cleanup');
-define('_MI_MYREFERER_STATS', 'Statistiques');
+define('_MI_MYREFERER_STATS', 'Statistics');
 define('_MI_MYREFERER_PERMS', 'Permissions');
 define('_MI_MYREFERER_BLOCKS', 'Blocks & Groups');
 
@@ -50,11 +50,8 @@ define('_MI_MYREFERER_ORDER_VISIT', 'Visits');
 define('_MI_MYREFERER_PERPAGE', 'Results count');
 define('_MI_MYREFERER_PERPAGE_DSC', 'Number of results to display per page.');
 define('_MI_MYREFERER_TAG_NEW', 'New');
-define(
-    '_MI_MYREFERER_TAG_NEW_DSC',
-    '1) How many time to be considered as new.<br>
-2) How many hits to be displayed in user side and usable by the Meta generator.'
-);
+define('_MI_MYREFERER_TAG_NEW_DSC', '1) How many time to be considered as new.<br>
+2) How many hits to be displayed in user side and usable by the Meta generator.');
 
 define('_MI_MYREFERER_TAG_POP', 'Popular');
 define('_MI_MYREFERER_TAG_POP_DSC', 'How many hits to be considered as popular.');
@@ -95,7 +92,7 @@ define('MI_MYREFERER_EDITOR_USER', 'Editor: User');
 define('MI_MYREFERER_EDITOR_USER_DESC', 'Select the Editor to use by the User');
 
 //Help
-define('_MI_MYREFERER_DIRNAME', basename(dirname(dirname(__DIR__))));
+define('_MI_MYREFERER_DIRNAME', basename(dirname(__DIR__, 2)));
 define('_MI_MYREFERER_HELP_HEADER', __DIR__ . '/help/helpheader.tpl');
 define('_MI_MYREFERER_BACK_2_ADMIN', 'Back to Administration of ');
 define('_MI_MYREFERER_OVERVIEW', 'Overview');

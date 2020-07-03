@@ -1,34 +1,40 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * @see http://www.php-fig.org/psr/psr-4/examples/
  */
-spl_autoload_register(
-    static function ($class) {
-        // project-specific namespace prefix
-        $prefix = 'XoopsModules\\' . ucfirst(basename(dirname(__DIR__)));
+spl_autoload_register(static function ($class) {
+    // project-specific namespace prefix
 
-        // base directory for the namespace prefix
-        $baseDir = __DIR__ . '/../class/';
+    $prefix = 'XoopsModules\\' . ucfirst(basename(dirname(__DIR__)));
 
-        // does the class use the namespace prefix?
-        $len = mb_strlen($prefix);
+    // base directory for the namespace prefix
 
-        if (0 !== strncmp($prefix, $class, $len)) {
-            return;
-        }
+    $baseDir = __DIR__ . '/../class/';
 
-        // get the relative class name
-        $relativeClass = mb_substr($class, $len);
+    // does the class use the namespace prefix?
 
-        // replace the namespace prefix with the base directory, replace namespace
-        // separators with directory separators in the relative class name, append
-        // with .php
-        $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+    $len = mb_strlen($prefix);
 
-        // if the file exists, require it
-        if (file_exists($file)) {
-            require $file;
-        }
+    if (0 !== strncmp($prefix, $class, $len)) {
+        return;
     }
-);
+
+    // get the relative class name
+
+    $relativeClass = mb_substr($class, $len);
+
+    // replace the namespace prefix with the base directory, replace namespace
+
+    // separators with directory separators in the relative class name, append
+
+    // with .php
+
+    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+
+    // if the file exists, require it
+
+    if (file_exists($file)) {
+        require $file;
+    }
+});

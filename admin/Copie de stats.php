@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -13,7 +15,7 @@
 require __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
-$query = '	SELECT * FROM ' . $xoopsDB->prefix('myref_users_pages_stats') . "
+$query = '	SELECT * FROM ' . $xoopsDB->prefix('myreferer_users_pages_stats') . "
 		WHERE $where $where_week AND query LIKE '%$search%' AND keyword = 0
 		ORDER BY $ordre $sort_ordre";
 // $counter = $xoopsDB->queryF($query);

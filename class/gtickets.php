@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 // GIJOE's Ticket Class (based on Marijuana's Oreteki XOOPS)
 // nobunobu's suggestions are applied
 
@@ -10,8 +11,10 @@ if (!class_exists('XoopsGTicket')) {
      */
     class XoopsGTicket
     {
-        public $_errors       = [];
+        public $_errors = [];
+
         public $_latest_token = '';
+
         // render form as plain html
 
         /**
@@ -91,9 +94,17 @@ if (!class_exists('XoopsGTicket')) {
             global $xoopsModule;
 
             // create a token
-            [$usec, $sec] = explode(' ', microtime());
-            $appendix_salt       = empty($_SERVER['PATH']) ? XOOPS_DB_NAME : $_SERVER['PATH'];
-            $token               = crypt($salt . $usec . $appendix_salt . $sec);
+
+            [
+                $usec,
+                $sec
+            ]
+                = explode(' ', microtime());
+
+            $appendix_salt = empty($_SERVER['PATH']) ? XOOPS_DB_NAME : $_SERVER['PATH'];
+
+            $token = crypt($salt . $usec . $appendix_salt . $sec);
+
             $this->_latest_token = $token;
 
             if (empty($_SESSION['XOOPS_G_STUBS'])) {
@@ -101,19 +112,23 @@ if (!class_exists('XoopsGTicket')) {
             }
 
             // limit max stubs 10
+
             if (count($_SESSION['XOOPS_G_STUBS']) > 10) {
                 $_SESSION['XOOPS_G_STUBS'] = array_slice($_SESSION['XOOPS_G_STUBS'], -10);
             }
 
             // record referer if browser send it
+
             $referer = empty(Request::getString('HTTP_REFERER', '', 'SERVER')) ? '' : $_SERVER['REQUEST_URI'];
 
             // area as module's dirname
+
             if (!$area && is_object(@$xoopsModule)) {
                 $area = $xoopsModule->getVar('dirname');
             }
 
             // store stub
+
             $_SESSION['XOOPS_G_STUBS'][] = [
                 'expire'  => time() + $timeout,
                 'referer' => $referer,
@@ -122,6 +137,7 @@ if (!class_exists('XoopsGTicket')) {
             ];
 
             // paid md5ed token as a ticket
+
             return md5($token . XOOPS_DB_PREFIX);
         }
 
@@ -139,14 +155,17 @@ if (!class_exists('XoopsGTicket')) {
             $this->_errors = [];
 
             // CHECK: stubs are not stored in session
+
             if (empty($_SESSION['XOOPS_G_STUBS']) || !is_array($_SESSION['XOOPS_G_STUBS'])) {
                 $this->clear();
+
                 $this->_errors[] = 'Invalid Session';
 
                 return false;
             }
 
             // get key&val of the ticket from a user's query
+
             if ($post) {
                 $ticket = empty($_POST['XOOPS_G_TICKET']) ? '' : $_POST['XOOPS_G_TICKET'];
             } else {
@@ -154,36 +173,46 @@ if (!class_exists('XoopsGTicket')) {
             }
 
             // CHECK: no tickets found
+
             if (empty($ticket)) {
                 $this->clear();
+
                 $this->_errors[] = 'Irregular post found';
 
                 return false;
             }
 
             // gargage collection & find a right stub
-            $stubs_tmp                 = $_SESSION['XOOPS_G_STUBS'];
+
+            $stubs_tmp = $_SESSION['XOOPS_G_STUBS'];
+
             $_SESSION['XOOPS_G_STUBS'] = [];
+
             foreach ($stubs_tmp as $stub) {
                 // default lifetime 30min
+
                 if ($stub['expire'] >= time()) {
                     if (md5($stub['token'] . XOOPS_DB_PREFIX) === $ticket) {
                         $found_stub = $stub;
                     } else {
                         // store the other valid stubs into session
+
                         $_SESSION['XOOPS_G_STUBS'][] = $stub;
                     }
                 } else {
                     if (md5($stub['token'] . XOOPS_DB_PREFIX) === $ticket) {
                         // not CSRF but Time-Out
+
                         $timeout_flag = true;
                     }
                 }
             }
 
             // CHECK: the right stub found or not
+
             if (empty($found_stub)) {
                 $this->clear();
+
                 if (empty($timeout_flag)) {
                     $this->_errors[] = 'Invalid Session';
                 } else {
@@ -194,15 +223,19 @@ if (!class_exists('XoopsGTicket')) {
             }
 
             // set area if necessary
+
             // area as module's dirname
+
             if (!$area && is_object(@$xoopsModule)) {
                 $area = $xoopsModule->getVar('dirname');
             }
 
             // check area or referer
+
             if (@$found_stub['area'] == $area) {
                 $area_check = true;
             }
+
             if (!empty($found_stub['referer']) && mb_strstr(@Request::getString('HTTP_REFERER', '', 'SERVER'), $found_stub['referer'])) {
                 $referer_check = true;
             }
@@ -210,16 +243,19 @@ if (!class_exists('XoopsGTicket')) {
             // if( empty( $area_check ) || empty( $referer_check ) ) { // restrict
             if (empty($area_check) && empty($referer_check)) { // loose
                 $this->clear();
+
                 $this->_errors[] = 'Invalid area or referer';
 
                 return false;
             }
 
             // all green
+
             return true;
         }
 
         // clear all stubs
+
         public function clear()
         {
             $_SESSION['XOOPS_G_STUBS'] = [];
@@ -232,11 +268,7 @@ if (!class_exists('XoopsGTicket')) {
          */
         public function using()
         {
-            if (!empty($_SESSION['XOOPS_G_STUBS'])) {
-                return true;
-            }
-
-            return false;
+            return !empty($_SESSION['XOOPS_G_STUBS']);
         }
 
         // return errors
@@ -249,6 +281,7 @@ if (!class_exists('XoopsGTicket')) {
         {
             if ($ashtml) {
                 $ret = '';
+
                 foreach ($this->_errors as $msg) {
                     $ret .= "$msg<br>\n";
                 }
@@ -258,34 +291,37 @@ if (!class_exists('XoopsGTicket')) {
 
             return $ret;
         }
+
         // end of class
     }
 
     // create a instance in global scope
+
     $GLOBALS['xoopsGTicket'] = new XoopsGTicket();
 }
 
 if (!function_exists('admin_refcheck')) {
     //Admin Referer Check By Marijuana(Rev.011)
+
     /**
      * @param string $chkref
      * @return bool
      */
+
     function admin_refcheck($chkref = '')
     {
         if (empty(Request::getString('HTTP_REFERER', '', 'SERVER'))) {
             return true;
         }
+
         $ref = Request::getString('HTTP_REFERER', '', 'SERVER');
 
         $cr = XOOPS_URL;
+
         if ('' != $chkref) {
             $cr .= $chkref;
         }
-        if (0 !== mb_strpos($ref, $cr)) {
-            return false;
-        }
 
-        return true;
+        return !0 !== mb_strpos($ref, $cr);
     }
 }

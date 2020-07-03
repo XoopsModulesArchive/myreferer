@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 // ------------------------------------------------------------------------- //
 //                            myblocksadmin.php                              //
 //                - XOOPS block admin for each modules -                     //
@@ -16,8 +17,8 @@ $adminObject = \Xmf\Module\Admin::getInstance();
 $adminObject->displayNavigation(basename(__FILE__));
 
 if (mb_substr(XOOPS_VERSION, 6, 3) > 2.0) {
-//    require __DIR__ . '/myblocksadmin2.php';
-//    exit;
+    //    require __DIR__ . '/myblocksadmin2.php';
+    //    exit;
 }
 
 require_once __DIR__ . '/mygrouppermform.php';
@@ -61,16 +62,23 @@ if (!empty($_GET['dirname'])) {
 
 if (!empty($target_module) && is_object($target_module)) {
     // specified by dirname
-    $target_mid     = $target_module->getVar('mid');
-    $target_mname   = $target_module->getVar('name') . '&nbsp;' . sprintf('(%2.2f)', $target_module->getVar('version') / 100.0);
+
+    $target_mid = $target_module->getVar('mid');
+
+    $target_mname = $target_module->getVar('name') . '&nbsp;' . sprintf('(%2.2f)', $target_module->getVar('version') / 100.0);
+
     $query4redirect = '?dirname=' . urlencode(strip_tags($_GET['dirname']));
 } elseif (isset($_GET['mid']) && 0 == $_GET['mid'] || 'blocksadmin' === $xoopsModule->getVar('dirname')) {
-    $target_mid     = 0;
-    $target_mname   = '';
+    $target_mid = 0;
+
+    $target_mname = '';
+
     $query4redirect = '?mid=0';
 } else {
-    $target_mid     = $xoopsModule->getVar('mid');
-    $target_mname   = $xoopsModule->getVar('name');
+    $target_mid = $xoopsModule->getVar('mid');
+
+    $target_mname = $xoopsModule->getVar('name');
+
     $query4redirect = '';
 }
 
@@ -95,9 +103,22 @@ function list_blocks()
     global $query4redirect, $block_arr;
 
     // cachetime options
-    $cachetimes = ['0' => _NOCACHE, '30' => sprintf(_SECONDS, 30), '60' => _MINUTE, '300' => sprintf(_MINUTES, 5), '1800' => sprintf(_MINUTES, 30), '3600' => _HOUR, '18000' => sprintf(_HOURS, 5), '86400' => _DAY, '259200' => sprintf(_DAYS, 3), '604800' => _WEEK, '2592000' => _MONTH];
+
+    $cachetimes = ['0'       => _NOCACHE,
+                   '30'      => sprintf(_SECONDS, 30),
+                   '60'      => _MINUTE,
+                   '300'     => sprintf(_MINUTES, 5),
+                   '1800'    => sprintf(_MINUTES, 30),
+                   '3600'    => _HOUR,
+                   '18000'   => sprintf(_HOURS, 5),
+                   '86400'   => _DAY,
+                   '259200'  => sprintf(_DAYS, 3),
+                   '604800'  => _WEEK,
+                   '2592000' => _MONTH
+    ];
 
     // displaying TH
+
     echo "
 	<form action='admin.php' name='blockadmin' method='post'>
 		<table width='100%' class='outer' cellpadding='4' cellspacing='1'>
@@ -111,25 +132,39 @@ function list_blocks()
 		</tr>\n";
 
     // blocks displaying loop
-    $class         = 'even';
+
+    $class = 'even';
+
     $block_configs = get_block_configs();
+
     foreach (array_keys($block_arr) as $i) {
         $sseln = $ssel0 = $ssel1 = $ssel2 = $ssel3 = $ssel4 = '';
+
         $scoln = $scol0 = $scol1 = $scol2 = $scol3 = $scol4 = '#FFFFFF';
-        /** add for xoops 2.0.14 */
-        $sseln = $ssel0 = $ssel1 = $ssel2 = $ssel3 = $ssel4 = $ssel5 = $ssel6 = $ssel7 = '';
-        $scoln = $scol0 = $scol1 = $scol2 = $scol3 = $scol4 = $scol5 = $scol6 = $scol7 = '#FFFFFF';
+
         /** add for xoops 2.0.14 */
 
-        $weight     = $block_arr[$i]->getVar('weight');
-        $title      = $block_arr[$i]->getVar('title');
-        $name       = $block_arr[$i]->getVar('name');
+        $sseln = $ssel0 = $ssel1 = $ssel2 = $ssel3 = $ssel4 = $ssel5 = $ssel6 = $ssel7 = '';
+
+        $scoln = $scol0 = $scol1 = $scol2 = $scol3 = $scol4 = $scol5 = $scol6 = $scol7 = '#FFFFFF';
+
+        /** add for xoops 2.0.14 */
+
+        $weight = $block_arr[$i]->getVar('weight');
+
+        $title = $block_arr[$i]->getVar('title');
+
+        $name = $block_arr[$i]->getVar('name');
+
         $bcachetime = $block_arr[$i]->getVar('bcachetime');
-        $bid        = $block_arr[$i]->getVar('bid');
+
+        $bid = $block_arr[$i]->getVar('bid');
 
         // visible and side
+
         if (1 != $block_arr[$i]->getVar('visible')) {
             $sseln = ' checked';
+
             $scoln = '#FF0000';
         } else {
             switch ($block_arr[$i]->getVar('side')) {
@@ -171,7 +206,9 @@ function list_blocks()
         }
 
         // bcachetime
+
         $cachetime_options = '';
+
         foreach ($cachetimes as $cachetime => $cachetime_name) {
             if ($bcachetime == $cachetime) {
                 $cachetime_options .= "<option value='$cachetime' selected='selected'>$cachetime_name</option>\n";
@@ -181,22 +218,35 @@ function list_blocks()
         }
 
         // target modules
-        $db            = XoopsDatabaseFactory::getDatabaseConnection();
-        $result        = $db->query('SELECT module_id FROM ' . $db->prefix('block_module_link') . " WHERE block_id='$bid'");
+
+        $db = XoopsDatabaseFactory::getDatabaseConnection();
+
+        $result = $db->query('SELECT module_id FROM ' . $db->prefix('block_module_link') . " WHERE block_id='$bid'");
+
         $selected_mids = [];
+
         while (list($selected_mid) = $db->fetchRow($result)) {
             $selected_mids[] = (int)$selected_mid;
         }
+
         $moduleHandler = xoops_getHandler('module');
-        $criteria      = new CriteriaCompo(new Criteria('hasmain', 1));
+
+        $criteria = new CriteriaCompo(new Criteria('hasmain', 1));
+
         $criteria->add(new Criteria('isactive', 1));
-        $module_list     = $moduleHandler->getList($criteria);
+
+        $module_list = $moduleHandler->getList($criteria);
+
         $module_list[-1] = _AM_TOPPAGE;
-        $module_list[0]  = _AM_ALLPAGES;
+
+        $module_list[0] = _AM_ALLPAGES;
+
         ksort($module_list);
+
         $module_options = '';
+
         foreach ($module_list as $mid => $mname) {
-            if (in_array($mid, $selected_mids)) {
+            if (in_array($mid, $selected_mids, true)) {
                 $module_options .= "<option value='$mid' selected='selected'>$mname</option>\n";
             } else {
                 $module_options .= "<option value='$mid'>$mname</option>\n";
@@ -204,6 +254,7 @@ function list_blocks()
         }
 
         // delete link if it is cloned block
+
         if ('D' === $block_arr[$i]->getVar('block_type') || 'C' === $block_arr[$i]->getVar('block_type')) {
             $delete_link = "<br><a href='admin.php?fct=blocksadmin&amp;op=delete&amp;bid=$bid'>" . _DELETE . '</a>';
         } else {
@@ -211,11 +262,14 @@ function list_blocks()
         }
 
         // clone link if it is marked as cloneable block
+
         // $modversion['blocks'][n]['can_clone']
+
         if ('D' === $block_arr[$i]->getVar('block_type') || 'C' === $block_arr[$i]->getVar('block_type')) {
             $can_clone = true;
         } else {
             $can_clone = false;
+
             foreach ($block_configs as $bconf) {
                 if ($block_arr[$i]->getVar('show_func') == $bconf['show_func'] && $block_arr[$i]->getVar('func_file') == $bconf['file'] && (empty($bconf['template']) || $block_arr[$i]->getVar('template') == $bconf['template'])) {
                     if (!empty($bconf['can_clone'])) {
@@ -224,6 +278,7 @@ function list_blocks()
                 }
             }
         }
+
         if ($can_clone) {
             $clone_link = "<br><a href='admin.php?fct=blocksadmin&amp;op=clone&amp;bid=$bid'>" . _CLONE . '</a>';
         } else {
@@ -231,6 +286,7 @@ function list_blocks()
         }
 
         // displaying part
+
         echo "
 		<tr valign='middle'>
 			<td class='$class'>
@@ -308,7 +364,7 @@ function list_blocks()
 			</td>
 		</tr>\n";
 
-        $class = ('even' === $class) ? 'odd' : 'even';
+        $class = 'even' === $class ? 'odd' : 'even';
     }
 
     echo "
@@ -331,12 +387,15 @@ function list_blocks()
 function get_block_configs()
 {
     $error_reporting_level = error_reporting(0);
+
     if (preg_match('/^[.0-9a-zA-Z_-]+$/', @$_GET['dirname'])) {
-        require dirname(dirname(__DIR__)) . '/' . $_GET['dirname'] . '/xoops_version.php';
+        require dirname(__DIR__, 2) . '/' . $_GET['dirname'] . '/xoops_version.php';
     } else {
         require dirname(__DIR__) . '/xoops_version.php';
     }
+
     error_reporting($error_reporting_level);
+
     if (empty($modversion['blocks'])) {
         return [];
     }
@@ -349,18 +408,23 @@ function list_groups()
     global $target_mid, $target_mname, $block_arr;
 
     $item_list = [];
+
     foreach (array_keys($block_arr) as $i) {
         $item_list[$block_arr[$i]->getVar('bid')] = $block_arr[$i]->getVar('title');
     }
 
     $form = new GroupPermForm(_AM_ADGS, 1, 'block_read', '');
+
     if ($target_mid > 1) {
         $form->addAppendix('module_admin', $target_mid, $target_mname . ' ' . _AM_ACTIVERIGHTS);
+
         $form->addAppendix('module_read', $target_mid, $target_mname . ' ' . _AM_ACCESSRIGHTS);
     }
+
     foreach ($item_list as $item_id => $item_name) {
         $form->addItem($item_id, $item_name);
     }
+
     echo $form->render();
 }
 
@@ -370,6 +434,7 @@ if (!empty($_POST['submit'])) {
     }
 
     require __DIR__ . '/mygroupperm.php';
+
     redirect_header(XOOPS_URL . '/modules/' . $xoopsModule->dirname() . "/admin/myblocksadmin.php$query4redirect", 1, _MD_AM_DBUPDATED);
 }
 
@@ -379,6 +444,7 @@ xoops_cp_header();
 
 if (!empty($block_arr)) {
     echo "<h4 style='text-align:left;'>" . _AM_BADMIN . "</h4>\n";
+
     list_blocks();
 }
 

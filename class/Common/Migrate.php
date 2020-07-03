@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Myreferer\Common;
 
@@ -12,11 +12,10 @@ namespace XoopsModules\Myreferer\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-use RuntimeException;
-
 use function basename;
 use function class_exists;
 use function dirname;
+use RuntimeException;
 
 /**
  * Class Migrate synchronize existing tables with target schema
@@ -39,13 +38,17 @@ class Migrate extends \Xmf\Database\Migrate
     public function __construct()
     {
         $class = __NAMESPACE__ . '\\' . 'Configurator';
+
         if (!class_exists($class)) {
             throw new RuntimeException("Class '$class' not found");
         }
-        $configurator       = new $class();
+
+        $configurator = new $class();
+
         $this->renameTables = $configurator->renameTables;
 
-        $moduleDirName = basename(dirname(dirname(__DIR__)));
+        $moduleDirName = basename(dirname(__DIR__, 2));
+
         parent::__construct($moduleDirName);
     }
 
@@ -71,12 +74,16 @@ class Migrate extends \Xmf\Database\Migrate
     {
         if ($this->tableHandler->useTable($tableName)) {
             $attributes = $this->tableHandler->getColumnAttributes($tableName, $columnName);
+
             if (false !== mb_strpos($attributes, ' int(')) {
                 if (false === mb_strpos($attributes, 'unsigned')) {
                     $this->tableHandler->alterColumn($tableName, $columnName, " bigint(16) NOT NULL  DEFAULT '0' ");
+
                     $this->tableHandler->update($tableName, [$columnName => "4294967296 + $columnName"], "WHERE $columnName < 0", false);
                 }
+
                 $this->tableHandler->alterColumn($tableName, $columnName, " varchar(45)  NOT NULL  DEFAULT '' ");
+
                 $this->tableHandler->update($tableName, [$columnName => "INET_NTOA($columnName)"], '', false);
             }
         }
@@ -87,16 +94,23 @@ class Migrate extends \Xmf\Database\Migrate
      */
     private function moveDoColumns()
     {
-        $tableName    = 'newbb_posts_text';
+        $tableName = 'newbb_posts_text';
+
         $srcTableName = 'newbb_posts';
+
         if ($this->tableHandler->useTable($tableName)
             && $this->tableHandler->useTable($srcTableName)) {
             $attributes = $this->tableHandler->getColumnAttributes($tableName, 'dohtml');
+
             if (false === $attributes) {
                 $this->synchronizeTable($tableName);
+
                 $updateTable = $GLOBALS['xoopsDB']->prefix($tableName);
-                $joinTable   = $GLOBALS['xoopsDB']->prefix($srcTableName);
-                $sql         = "UPDATE `$updateTable` t1 INNER JOIN `$joinTable` t2 ON t1.post_id = t2.post_id \n" . "SET t1.dohtml = t2.dohtml,  t1.dosmiley = t2.dosmiley, t1.doxcode = t2.doxcode\n" . '  , t1.doimage = t2.doimage, t1.dobr = t2.dobr';
+
+                $joinTable = $GLOBALS['xoopsDB']->prefix($srcTableName);
+
+                $sql = "UPDATE `$updateTable` t1 INNER JOIN `$joinTable` t2 ON t1.post_id = t2.post_id \n" . "SET t1.dohtml = t2.dohtml,  t1.dosmiley = t2.dosmiley, t1.doxcode = t2.doxcode\n" . '  , t1.doimage = t2.doimage, t1.dobr = t2.dobr';
+
                 $this->tableHandler->addToQueue($sql);
             }
         }

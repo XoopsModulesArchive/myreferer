@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -15,8 +16,8 @@
 // $startart = isset( $_GET['startart'] ) ? intval( $_GET['startart'] ) : 0;
 // error_reporting(E_ALL ^ E_NOTICE);
 
-require_once dirname(dirname(dirname(__DIR__))) . '/mainfile.php';
-require_once dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+require_once dirname(__DIR__, 3) . '/mainfile.php';
+require_once dirname(__DIR__, 3) . '/include/cp_header.php';
 
 $startart = $_POST['startart'] ?? ($_GET['startart'] ?? 0);
 $id       = $_POST['id'] ?? ($_GET['id'] ?? '');
@@ -35,32 +36,45 @@ $sql = $_POST['sql'] ?? ($_GET['sql'] ?? 0);
 $and = '';
 
 if (1 == $engine) {
-    $and   = ' AND engine=1';
-    $data  = 'referer';
+    $and = ' AND engine=1';
+
+    $data = 'referer';
+
     $title = _MD_MYREFERER_ENGINE;
 } elseif (0 == $engine) {
-    $and   .= ' AND engine=0';
-    $data  = 'referer';
+    $and .= ' AND engine=0';
+
+    $data = 'referer';
+
     $title = _MD_MYREFERER_REFERER;
 }
-if ('myref_query' === $sql) {
-    $and   = ' AND keyword=0';
-    $data  = 'query';
+if ('myreferer_query' === $sql) {
+    $and = ' AND keyword=0';
+
+    $data = 'query';
+
     $title = _MD_MYREFERER_QUERY;
-} elseif ('myref_keywords' === $sql) {
-    $and   = ' AND keyword=1';
-    $sql   = 'myref_query';
-    $data  = 'query';
+} elseif ('myreferer_keywords' === $sql) {
+    $and = ' AND keyword=1';
+
+    $sql = 'myreferer_query';
+
+    $data = 'query';
+
     $title = _MD_MYREFERER_KEYWORDS;
 }
-if ('myref_robots' === $sql) {
-    $data  = 'robots';
-    $and   = '';
+if ('myreferer_robots' === $sql) {
+    $data = 'robots';
+
+    $and = '';
+
     $title = _MD_MYREFERER_ROBOTS;
 }
-if ('myref_users' === $sql) {
-    $data  = 'user';
-    $and   = '';
+if ('myreferer_users' === $sql) {
+    $data = 'user';
+
+    $and = '';
+
     $title = _MD_MYREFERER_USERS;
 }
 
@@ -70,7 +84,8 @@ $all       = _MD_MYREFERER_ALL;
 
 if ($week) {
     $where_week = 'AND visit_tmp > 0';
-    $all        = '';
+
+    $all = '';
 } else {
     $where_week = '';
 }
@@ -83,29 +98,39 @@ if ('blacklist' === $op) {
 }
 
 if ('' == $ord) {
-    $ordre      = 'visit_tmp';
+    $ordre = 'visit_tmp';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_VISITS . ' / ' . _MD_MYREFERER_WEEK;
+
+    $ord_text = _MD_MYREFERER_VISITS . ' / ' . _MD_MYREFERER_WEEK;
 }
 if ('1' == $ord) {
-    $ordre      = 'id';
+    $ordre = 'id';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_LATEST;
+
+    $ord_text = _MD_MYREFERER_LATEST;
 }
 if ('2' == $ord) {
-    $ordre      = $xoopsModuleConfig['order'];
+    $ordre = $xoopsModuleConfig['order'];
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_VISITS;
+
+    $ord_text = _MD_MYREFERER_VISITS;
 }
 if ('3' == $ord) {
-    $ordre      = 'query';
+    $ordre = 'query';
+
     $sort_ordre = 'ASC';
-    $ord_text   = _MD_MYREFERER_KEYWORDS;
+
+    $ord_text = _MD_MYREFERER_KEYWORDS;
 }
 if ('4' == $ord) {
-    $ordre      = 'date';
+    $ordre = 'date';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_DATE;
+
+    $ord_text = _MD_MYREFERER_DATE;
 }
 
 $query   = '	SELECT * FROM ' . $xoopsDB->prefix($sql) . "
@@ -118,21 +143,35 @@ if (0 == $count) {
     echo _MD_MYREFERER_NOVISIT . '<p>';
 } else {
     $result = $xoopsDB->queryF($query, $xoopsModuleConfig['perpage'], $startart);
+
     //	$pagenav = new \XoopsPageNav( $count, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord='.$ord.'&search='.$search.'&week='.$week.'&op='.$op );
+
     echo '<html>';
+
     echo '<head>';
+
     echo "<link rel='stylesheet' type='text/css' media='all' href='http://www.arma-sa.com/xoops.css'>";
+
     echo "<link rel='stylesheet' type='text/css' media='all' href='http://www.arma-sa.com/modules/system/style.css'>";
+
     echo '<style type="text/css">';
+
     echo 'body {font-size: 12px; }';
+
     echo 'td {font-size: 10px; }';
+
     echo '</style>';
+
     echo '</head>';
+
     echo '<body>';
+
     echo "<div style='text-align:center;'>" . _MD_MYREFERER_WEEK . " <b>$this_date</b> (" . date(l) . ' ' . formatTimestamp(time()) . ')</div>';
+
     echo "<div style='text-align:center;'><b>$all</b> " . _MD_MYREFERER_RANKING . " <b>$ord_text</b> ($count)</div>";
 
     echo '<p>';
+
     echo "<div align='center'>
 		  <table border='1' cellpadding='2' cellspacing='0' class='bg2' width='600px'>
           <tr class='bg3'>
@@ -143,6 +182,7 @@ if (0 == $count) {
           </tr>';
 
     $i = $startart;
+
     while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
         if ($myrow['date']) {
             $data_date = formatTimestamp($myrow['date'], 'W');
@@ -169,9 +209,11 @@ if (0 == $count) {
         }
 
         $i++;
+
         if ('user' === $data) {
             $myrow[$data] = XoopsUser::getUnameFromId($myrow[$data]);
         }
+
         echo "<tr $bg>
               <td align='center'>       $i</td>
               <td align='center'>       <b>" . $myrow['visit_tmp'] . '</b> (' . $myrow['visit'] . ")	</td>
@@ -179,8 +221,12 @@ if (0 == $count) {
               <td align='center'>       " . formatTimestamp($time) . '	</td>
               </tr>';
     }
+
     echo '</table></div>';
+
     echo "<br>\n";
+
     echo '</body>';
+
     echo '</html>';
 }

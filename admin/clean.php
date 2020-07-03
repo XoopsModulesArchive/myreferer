@@ -1,16 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
  *            - DuGris (www.dugris.info)
  */
-
 require __DIR__ . '/admin_header.php';
 
 xoops_cp_header();
@@ -28,44 +27,56 @@ $visit = $_POST['visit'] ?? ($_GET['visit'] ?? '0');
 $date = $_POST['date'] ?? ($_GET['date'] ?? '');
 
 if ($data) {
-    $date  = time() - (86400 * $date);
+    $date = time() - (86400 * $date);
+
     $datas = implode(', ', $data);
-    if (preg_match('/myref_pages/', $datas)) {
-        $datas .= ', myref_query_pages, myref_referer_pages, myref_robots_pages, myref_users_pages';
+
+    if (false !== mb_strpos($datas, 'myreferer_pages')) {
+        $datas .= ', myreferer_query_pages, myreferer_referer_pages, myreferer_robots_pages, myreferer_users_pages';
     }
-    $array  = explode(', ', $datas);
+
+    $array = explode(', ', $datas);
+
     $result = '<p>' . _MD_MYREFERER_CLEANED;
-    $i      = 2;
+
+    $i = 2;
 
     foreach ($array as $datas) {
         if ('myref_engine' === $datas) {
-            $datas = 'myref_referer';
+            $datas = 'myreferer_referer';
+
             $where = 'engine = 1 AND';
-        } elseif ('myref_referer' === $datas) {
+        } elseif ('myreferer_referer' === $datas) {
             $where = 'engine = 0 AND';
         } else {
             $where = '';
         }
 
         if ($word) {
-            $data_type = preg_replace('myref_', '', $datas);
+            $data_type = preg_replace('myreferer_', '', $datas);
+
             if ('users' === $data_type) {
                 $data_type = 'user';
             }
+
             if ('pages' === $data_type) {
                 $data_type = 'page';
             }
+
             if ('referer' === $data_type) {
                 $data_type = 'ref_url';
             }
+
             $word_replace = "$data_type LIKE '%$word%' AND ";
         }
 
         // echo '<br>données = '.$datas.'<br>visit = '.$visit.'<br>date = '.$date;
+
         $sql = 'SELECT COUNT(*) FROM ' . $xoopsDB->prefix($datas) . "
 				WHERE $word_replace $where visit <= '$visit' AND date <= '$date'";
 
         $count = $xoopsDB->queryF($sql);
+
         [$total] = $xoopsDB->fetchRow($count);
 
         $sql = 'DELETE FROM ' . $xoopsDB->prefix($datas) . "
@@ -74,16 +85,20 @@ if ($data) {
         $xoopsDB->queryF($sql);
 
         $result .= '<div align="center">' . $datas . ' : <b>' . $total . _MD_MYREFERER_ENTRIES . '</b></div>';
+
         if ($total) {
             $i += 2;
         }
     }
+
     redirect_header('clean.php', $i, _MD_MYREFERER_UPDATED . $result);
+
     exit();
 }
 
 if ('clean' === $ord) {
     redirect_header('clean.php', 1, _MD_MYREFERER_ERROR);
+
     exit();
 }
 
@@ -97,12 +112,12 @@ echo '<table border="0" width="600"><tr><td>';
 
 echo '<div align="left"><b>1) <u>' . _MD_MYREFERER_DATATYPE . '</u></b><p>';
 echo '<form>
-      <input type="checkbox" name="data[]" value="myref_referer">&nbsp;' . _MD_MYREFERER_REFERER . '</input><br>
-      <input type="checkbox" name="data[]" value="myref_engine">&nbsp;' . _MD_MYREFERER_ENGINE . '</input><br>
-      <input type="checkbox" name="data[]" value="myref_robots">&nbsp;' . _MD_MYREFERER_ROBOTS . '</input><br>
-      <input type="checkbox" name="data[]" value="myref_query">&nbsp;' . _MD_MYREFERER_KEYWORDS . '</input><br>
-      <input type="checkbox" name="data[]" value="myref_users">&nbsp;' . _MD_MYREFERER_USERS . '</input><br>
-      <input type="checkbox" name="data[]" value="myref_pages">&nbsp;' . _MD_MYREFERER_PAGE . '</input><br>';
+      <input type="checkbox" name="data[]" value="myreferer_referer">&nbsp;' . _MD_MYREFERER_REFERER . '</input><br>
+      <input type="checkbox" name="data[]" value="myreferer_engine">&nbsp;' . _MD_MYREFERER_ENGINE . '</input><br>
+      <input type="checkbox" name="data[]" value="myreferer_robots">&nbsp;' . _MD_MYREFERER_ROBOTS . '</input><br>
+      <input type="checkbox" name="data[]" value="myreferer_query">&nbsp;' . _MD_MYREFERER_KEYWORDS . '</input><br>
+      <input type="checkbox" name="data[]" value="myreferer_users">&nbsp;' . _MD_MYREFERER_USERS . '</input><br>
+      <input type="checkbox" name="data[]" value="myreferer_pages">&nbsp;' . _MD_MYREFERER_PAGE . '</input><br>';
 echo '</div>';
 
 echo '</td><td>';

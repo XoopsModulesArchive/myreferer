@@ -1,16 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
  *            - DuGris (www.dugris.info)
  */
-
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopsform/grouppermform.php';
 
@@ -20,6 +19,7 @@ $adminObject->displayNavigation(basename(__FILE__));
 
 if (!is_object($xoopsUser) || (is_object($xoopsUser) && !$xoopsUser->isAdmin())) {
     redirect_header('<script>javascript:history.go(-1)</script>', 1, _NOPERM);
+
     exit;
 }
 
@@ -39,7 +39,7 @@ $myts = \MyTextSanitizer::getInstance();
 $item_list_view = [];
 $block_view     = [];
 echo "<h3 style='color: #2F5376; font-weight: bold; font-size: 14px; margin: 6px 0 0 0; '>" . _MD_MYREFERER_PERMISSIONS_DSC . '</h3>';
-$form_view = new XoopsGroupPermForm('', $xoopsModule->getVar('mid'), 'myReferer_wiew', '');
+$form_view = new XoopsGroupPermForm('', $xoopsModule->getVar('mid'), 'myreferer_wiew', '');
 $form_view->addItem(1, _MD_MYREFERER_REFERER);
 $form_view->addItem(2, _MD_MYREFERER_ENGINE);
 $form_view->addItem(3, _MD_MYREFERER_KEYWORDS);

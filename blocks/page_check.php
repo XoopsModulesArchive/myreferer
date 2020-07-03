@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -19,7 +19,8 @@ if (!defined('XOOPS_ROOT_PATH')) {
  */
 function a_page_check_show()
 {
-    $block        = [];
+    $block = [];
+
     $block['rec'] = '<a href="' . XOOPS_URL . '/modules/myreferer/rec.php">Track this page</a>';
 
     return $block;

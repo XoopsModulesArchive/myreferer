@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -17,43 +17,57 @@ $startart = isset($_GET['startart']) ? (int)$_GET['startart'] : 0;
 $ord = $_POST['ord'] ?? ($_GET['ord'] ?? '');
 
 if ('3' == $ord) {
-    $ordre      = 'robots';
+    $ordre = 'robots';
+
     $sort_ordre = 'ASC';
-    $ord_text   = _MD_MYREFERER_ORIGINE;
+
+    $ord_text = _MD_MYREFERER_ORIGINE;
 }
 if ('4' == $ord) {
-    $ordre      = 'date';
+    $ordre = 'date';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_DATE;
+
+    $ord_text = _MD_MYREFERER_DATE;
 }
 if ('2' == $ord) {
-    $ordre      = 'visit';
+    $ordre = 'visit';
+
     $sort_ordre = 'DESC';
-    $ord_text   = _MD_MYREFERER_VISITS;
+
+    $ord_text = _MD_MYREFERER_VISITS;
 }
 if ('' == $ord) {
-    $ordre      = 'page';
+    $ordre = 'page';
+
     $sort_ordre = 'ASC';
-    $ord_text   = _MD_MYREFERER_PAGE;
+
+    $ord_text = _MD_MYREFERER_PAGE;
 }
 if ('del' === $ord) {
     $id = $_GET['id'] ?? '';
 
-    $sql = 'DELETE FROM ' . $xoopsDB->prefix('myref_page') . " WHERE id = $id";
+    $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_page') . " WHERE id = $id";
+
     $xoopsDB->queryF($sql);
 
     redirect_header('page.php', 1, _MD_MYREFERER_DELETED);
+
     exit();
 }
 if ('clean' === $ord) {
     $id = $_GET['id'] ?? '';
 
     //	$clean_days = (time()-(86400) );
+
     $clean_days = time();
-    $sql        = 'DELETE FROM ' . $xoopsDB->prefix('myref_page') . " WHERE date < $clean_days";
+
+    $sql = 'DELETE FROM ' . $xoopsDB->prefix('myreferer_page') . " WHERE date < $clean_days";
+
     $xoopsDB->queryF($sql);
 
     redirect_header('page.php', 1, _MD_MYREFERER_CLEANED);
+
     exit();
 }
 
@@ -61,10 +75,8 @@ require_once dirname(__DIR__) . '/include/nav.php';
 OpenTable();
 echo _MD_MYREFERER_HEADER . ' <b>' . $xoopsConfig['sitename'] . '</b> <br>';
 
-$result = $xoopsDB->query(
-    'SELECT id, page, robots, visit, date FROM ' . $xoopsDB->prefix('myref_page') . "
-	ORDER BY $ordre $sort_ordre"
-);
+$result = $xoopsDB->query('SELECT id, page, robots, visit, date FROM ' . $xoopsDB->prefix('myreferer_page') . "
+	ORDER BY $ordre $sort_ordre");
 
 $robots = @mysqli_num_rows($result);
 
@@ -86,26 +98,34 @@ if (0 == $robots) {
               </tr>';
 
     $i = 0;
+
     while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
         if ($myrow['date']) {
             $dates = formatTimestamp($myrow['date'], 'm');
         } else {
             $dates = _MD_MYREFERER_NOVISITYET;
         }
+
         $page = str_replace(XOOPS_URL, '', 'http://' . $myrow['page']);
 
-        myReferer_GetRobotInfo($myrow['robots'], 'robot_name', 'robot_url');
+        myreferer_GetRobotInfo($myrow['robots'], 'robot_name', 'robot_url');
 
         if ('0' == $myrow['visit']) {
-            $bg             = 'bg1';
-            $i              = '';
+            $bg = 'bg1';
+
+            $i = '';
+
             $myrow['visit'] = 'Page';
-            $delete         = "<a href='page.php?ord=del&id=" . $myrow['id'] . "'>
+
+            $delete = "<a href='page.php?ord=del&id=" . $myrow['id'] . "'>
 						<img src='../assets/images/icon/delete.gif' alt='" . _DELETE . "'></a>";
         } else {
             $bg = 'bg4';
+
             $i++;
-            $page   = '';
+
+            $page = '';
+
             $delete = '';
         }
 
@@ -118,10 +138,13 @@ if (0 == $robots) {
                   <td align='center'>$delete</td>
                   </tr>";
     }
+
     echo '</table></div>';
 
     //		$pagenav = new \XoopsPageNav( $i, 10, $startart, 'startart', 'page=' . $id );
+
     //		echo '<div style="text-align:center;">' . $pagenav -> renderNav() . '</div>';
+
     echo "<br>\n";
 
     echo "<p align='right'>

@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -28,9 +28,11 @@ $meta_limit = $_POST['meta_limit'] ?? ($_GET['meta_limit'] ?? '100');
 
 if ('transfer' === $ord) {
     $sql = 'UPDATE ' . $xoopsDB->prefix('config') . "SET conf_value = '$keywords' WHERE conf_id = 38";
+
     $xoopsDB->queryF($sql);
 
     redirect_header('meta.php', 1, _MD_MYREFERER_UPDATED);
+
     exit();
 }
 
@@ -39,42 +41,60 @@ $pop = $xoopsModuleConfig['tag_pop'] / 10;
 
 $metamenu = 0;
 if ('date' === $ord or 'referer' === $ord) {
-    $name     = _MD_MYREFERER_DATE;
-    $ord      = 'date DESC';
-    $where    = 'AND visit > 1';
+    $name = _MD_MYREFERER_DATE;
+
+    $ord = 'date DESC';
+
+    $where = 'AND visit > 1';
+
     $metamenu = 0;
 }
 if ('new' === $ord) {
-    $name     = _MD_MYREFERER_NEW;
-    $ord      = 'date DESC';
-    $where    = 'AND visit = 1';
+    $name = _MD_MYREFERER_NEW;
+
+    $ord = 'date DESC';
+
+    $where = 'AND visit = 1';
+
     $metamenu = 1;
 }
 if ('visit' === $ord) {
-    $name     = _MD_MYREFERER_TOP . ' ' . $meta_limit;
-    $ord      = 'visit_tmp DESC';
-    $where    = 'AND visit > 1';
+    $name = _MD_MYREFERER_TOP . ' ' . $meta_limit;
+
+    $ord = 'visit_tmp DESC';
+
+    $where = 'AND visit > 1';
+
     $metamenu = 2;
 }
 if ('pop' === $ord) {
-    $name     = _MD_MYREFERER_POP . ' (> ' . $pop . ' hits)';
-    $ord      = 'visit DESC';
-    $where    = 'AND visit >= ' . $pop;
+    $name = _MD_MYREFERER_POP . ' (> ' . $pop . ' hits)';
+
+    $ord = 'visit DESC';
+
+    $where = 'AND visit >= ' . $pop;
+
     $metamenu = 3;
 }
 
 if ('random' === $ord) {
     $metamenu = 4;
-    $name     = _MD_MYREFERER_RANDOM;
-    $ord      = 'date DESC';
-    $where    = 'AND visit > 1';
-    $result   = $xoopsDB->queryF('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('myref_query') . " WHERE hide = 0  AND keyword = 1 $where");
+
+    $name = _MD_MYREFERER_RANDOM;
+
+    $ord = 'date DESC';
+
+    $where = 'AND visit > 1';
+
+    $result = $xoopsDB->queryF('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('myreferer_query') . " WHERE hide = 0  AND keyword = 1 $where");
 
     [$total] = $xoopsDB->fetchRow($result);
-    $total = $total - $meta_limit;
+
+    $total -= $meta_limit;
+
     try {
         $rand = random_int(0, $total);
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
     }
 } else {
     $rand = '';
@@ -87,14 +107,16 @@ while (list($query1) = $xoopsDB->fetchRow($result1)) {
     $meta_keywords = $query1;
 }
 
-$sql    = 'SELECT query FROM ' . $xoopsDB->prefix('myref_query') . " WHERE hide = 0 AND keyword = 1 $where ORDER BY $ord";
+$sql    = 'SELECT query FROM ' . $xoopsDB->prefix('myreferer_query') . " WHERE hide = 0 AND keyword = 1 $where ORDER BY $ord";
 $result = $xoopsDB->queryF($sql, $meta_limit, $rand);
 while (list($query) = $xoopsDB->fetchRow($result)) {
     $i++;
+
     if ($i > 1) {
         $coma = ', ';
     }
-    $keywords = $keywords . $coma . $query;
+
+    $keywords .= $coma . $query;
 }
 $keywords_count = mb_strlen($keywords);
 

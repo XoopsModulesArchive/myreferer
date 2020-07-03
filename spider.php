@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -21,25 +22,31 @@ $xoopsTpl->assign('xoops_pagetitle', _MYREFERER_ROBOT);
 
 if (Utility::checkRight(5)) {
     // Query : display referers or robots
+
     $sql = 'SELECT id, robots, ref_url, page, visit, startdate, date, hide
-		FROM ' . $xoopsDB->prefix('myref_robots') . "
+		FROM ' . $xoopsDB->prefix('myreferer_robots') . "
 		WHERE hide = 0 $more
 		ORDER BY $order";
 
     $result = $xoopsDB->queryF($sql, $xoopsModuleConfig['perpage'], $startart);
+
     while (list($id, $robots, $ref_url, $page, $visit, $startdate, $date, $hide) = $xoopsDB->fetchRow($result)) {
         $info = [];
 
         // Module icon
+
         // Popularity
-        if ($visit > ($xoopsModuleConfig['tag_pop'] * 5)) {
+
+        if ($visit > $xoopsModuleConfig['tag_pop'] * 5) {
             $pop = '&nbsp;<img src="images/icon/pop.gif" alt="' . $visit . ' ' . _READS . '">';
         } else {
             $pop = '';
         }
 
         // Recent
-        $startingdate = (time() - (86400 * $new[0]));
+
+        $startingdate = time() - (86400 * $new[0]);
+
         if ($startingdate < $date and $visit <= $new[1]) {
             $new_icon = '&nbsp;<img src="images/icon/new.gif" alt="">';
         } else {
@@ -47,69 +54,96 @@ if (Utility::checkRight(5)) {
         }
 
         $count++;
-        $today  = time() - 86400;
+
+        $today = time() - 86400;
+
         $recent = time() - (86400 * $new[0]);
+
         if ($date >= $recent) {
-            $color  = '';
+            $color = '';
+
             $format = '';
         } else {
-            $color  = $xoopsModuleConfig['toold'];
+            $color = $xoopsModuleConfig['toold'];
+
             $format = 'italic';
         }
+
         if ($date >= $today) {
-            $color  = $xoopsModuleConfig['today'];
+            $color = $xoopsModuleConfig['today'];
+
             $format = 'bold';
         }
 
         $robotName = Utility::getRobotName($robots);
-        $ref_url    = Utility::getRobotUrl($robots);
+
+        $ref_url = Utility::getRobotUrl($robots);
 
         // Display weekly stats about visits and limit number to 2
+
         $total_day = ($date - $startdate) / (60 * 60 * 24);
-        $day_stat  = 0;
+
+        $day_stat = 0;
+
         if (0 != $total_day) {
-            $day_stat = ($visit / $total_day);
-            $tmp      = explode('.', $day_stat);
+            $day_stat = $visit / $total_day;
+
+            $tmp = explode('.', $day_stat);
+
             if (count($tmp) > 1) {
-                $tmp[1]   = '.' . mb_substr($tmp[1], 0, 2);
+                $tmp[1] = '.' . mb_substr($tmp[1], 0, 2);
+
                 $day_stat = abs($tmp[0] . $tmp[1]);
             }
         }
 
         // Compile results of query
 
-        $info['id']          = $id;
-        $info['count']       = $count;
-        $info['referer']     = $robotName;
+        $info['id'] = $id;
+
+        $info['count'] = $count;
+
+        $info['referer'] = $robotName;
+
         $info['alt_referer'] = $robots;
-        $info['icon']        = $new_icon . $pop;
-        $info['ref_url']     = $ref_url;
-        $info['page']        = 'http://' . $page;
+
+        $info['icon'] = $new_icon . $pop;
+
+        $info['ref_url'] = $ref_url;
+
+        $info['page'] = 'http://' . $page;
+
         if ($day_stat <= $visit and $day_stat > 0) {
             $info['visit'] = '<b>' . $visit . '</b><br><nobr>[' . $day_stat . '&nbsp;/&nbsp;' . _DAY . ']</nobr>';
         } else {
             $info['visit'] = '<b>' . $visit . '</b>';
         }
+
         $info['date'] = '<div style="color:' . $color . '; font-weight:' . $format . '">' . formatTimestamp($date, 'm') . '</div>';
 
         $xoopsTpl->append('infos', $info);
+
         unset($info);
     }
 
     // Query on counter result
-    $result = $xoopsDB->queryF(
-        'SELECT COUNT(id)
-		FROM ' . $xoopsDB->prefix('myref_robots') . "
-		WHERE hide = 0 $more"
-    );
+
+    $result = $xoopsDB->queryF('SELECT COUNT(id)
+		FROM ' . $xoopsDB->prefix('myreferer_robots') . "
+		WHERE hide = 0 $more");
 
     [$numrows] = $xoopsDB->fetchRow($result);
 
     // Counter
+
     $xoopsTpl->assign('numrows', $count . ' / ' . $numrows . '&nbsp;' . $current);
+
     $pagenav = new XoopsPageNav($numrows, $xoopsModuleConfig['perpage'], $startart, 'startart', 'ord=' . $ord . '&op=' . $op);
+
     $xoopsTpl->assign('pagenav', $pagenav->renderNav());
+
     $xoopsTpl->assign('navlink', 'spider.php?op=' . $op . '&startart=' . $startart);
+
     $xoopsTpl->assign('pages', _MYREFERER_PAGES);
 } else {
     $xoopsTpl->assign('numrows', '');

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Myreferer;
 
@@ -15,7 +15,6 @@ namespace XoopsModules\Myreferer;
 /**
  * @copyright    XOOPS Project https://xoops.org/
  * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
- * @package
  * @since
  * @author       XOOPS Development Team
  */
@@ -32,21 +31,30 @@ final class Constants
      */
 
     public const DISALLOW = 0;
+
     /**
      * no delay XOOPS redirect delay (in seconds)
      */
+
     public const REDIRECT_DELAY_NONE = 0;
+
     /**
      * short XOOPS redirect delay (in seconds)
      */
+
     public const REDIRECT_DELAY_SHORT = 1;
+
     /**
      * medium XOOPS redirect delay (in seconds)
      */
+
     public const REDIRECT_DELAY_MEDIUM = 3;
+
     /**
      * long XOOPS redirect delay (in seconds)
      */
+
     public const REDIRECT_DELAY_LONG = 7;
+
     /**#@-*/
 }

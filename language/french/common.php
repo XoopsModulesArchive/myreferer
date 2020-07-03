@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -30,16 +31,20 @@ define('_MYREFERER_SMALLCAPS', 'Convertir les mots-cl�s recherch�s en minusc
 define('_MYREFERER_SMALLCAPS_DSC', '');
 
 define('_MYREFERER_KEYWORD_BLACKLIST', 'Liste des mots cl�s � exclure');
-define('_MYREFERER_KEYWORD_BLACKLIST_DSC', 'Sp�cifier les nots cl�s qui doivent �tre exclus.<br>Les mots cl�s doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
+define('_MYREFERER_KEYWORD_BLACKLIST_DSC',
+       'Sp�cifier les nots cl�s qui doivent �tre exclus.<br>Les mots cl�s doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
 
 define('_MYREFERER_MODULE_BLACKLIST', 'Liste des modules � exclure');
-define('_MYREFERER_MODULE_BLACKLIST_DSC', 'Sp�cifier le nom des modules qui doivent �tre exclus.<br>Les noms des r�pertoires doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
+define('_MYREFERER_MODULE_BLACKLIST_DSC',
+       'Sp�cifier le nom des modules qui doivent �tre exclus.<br>Les noms des r�pertoires doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : myreferer<b><span style="color: #CC0000; ">|</span></b>multiMenu');
 
 define('_MYREFERER_SEARCH_BLACKLIST', 'Liste des moteurs de recherche � exclure');
-define('_MYREFERER_SEARCH_BLACKLIST_DSC', 'Sp�cifier les moteurs de recherche qui doivent �tre exclus.<br>Les moteurs de recherche doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : google.it<b><span style="color: #CC0000; ">|</span></b>sucheaol.aol.de');
+define('_MYREFERER_SEARCH_BLACKLIST_DSC',
+       'Sp�cifier les moteurs de recherche qui doivent �tre exclus.<br>Les moteurs de recherche doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : google.it<b><span style="color: #CC0000; ">|</span></b>sucheaol.aol.de');
 
 define('_MYREFERER_REFERER_BLACKLIST', 'Liste des r�f�rants � exclure');
-define('_MYREFERER_REFERER_BLACKLIST_DSC', 'Sp�cifier les r�f�rents qui doivent �tre exclus.<br>Les r�f�rents doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : 127.0.0.1<b><span style="color: #CC0000; ">|</span></b>mail.google.com');
+define('_MYREFERER_REFERER_BLACKLIST_DSC',
+       'Sp�cifier les r�f�rents qui doivent �tre exclus.<br>Les r�f�rents doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : 127.0.0.1<b><span style="color: #CC0000; ">|</span></b>mail.google.com');
 
 define('_MYREFERER_NEW_BOT_SMAIL', "Activer l'envoi d'un email pour le r�f�rencement par un nouveau robot");
 define('_MYREFERER_NEW_BOT_SMAIL_DSC', '');
@@ -48,13 +53,15 @@ define('_MYREFERER_NEW_BOT_MAIL', "Adresse d'envoi des emails");
 define('_MYREFERER_NEW_BOT_MAIL_DSC', "si vide, les emails seront envoy� � l'administrateur du site");
 
 define('_MYREFERER_ROBOTS_BLACKLIST', 'Liste des robots � exclure');
-define('_MYREFERER_ROBOTS_BLACKLIST_DSC', 'Sp�cifier les robots qui doivent �tre exclus.<br>Les robots doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : googlebot<b><span style="color: #CC0000; ">|</span></b>msnbot');
+define('_MYREFERER_ROBOTS_BLACKLIST_DSC',
+       'Sp�cifier les robots qui doivent �tre exclus.<br>Les robots doivent �tre s�par�s par <b><span style="color: #CC0000; ">|</span></b>.<br>par exemple : googlebot<b><span style="color: #CC0000; ">|</span></b>msnbot');
 
 define('_MYREFERER_PAGE_PROHIBIT', 'Page de redirection des robots prohib�s');
 define('_MYREFERER_PAGE_PROHIBIT_DSC', '');
 
 define('_MYREFERER_ROBOTS_PROHIBIT', 'Liste des robots prohib�s');
-define('_MYREFERER_ROBOTS_PROHIBIT_DSC', "Cette option permettra d'interdire l'acc�s au site aux robots sp�cifi�s.<br>Les robots doivent �tre s�par�s par <b><span style=\"color: #CC0000; \">|</span></b>.<br>par exemple : fileDL.exe<b><span style=\"color: #CC0000; \">|</span></b>Lynx");
+define('_MYREFERER_ROBOTS_PROHIBIT_DSC',
+       "Cette option permettra d'interdire l'acc�s au site aux robots sp�cifi�s.<br>Les robots doivent �tre s�par�s par <b><span style=\"color: #CC0000; \">|</span></b>.<br>par exemple : fileDL.exe<b><span style=\"color: #CC0000; \">|</span></b>Lynx");
 
 define('_MYREFERER_STATS_ALL', 'Tout');
 define('_MYREFERER_STATS_TOP', 'Top');

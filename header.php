@@ -1,22 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
  *            - DuGris (www.dugris.info)
  */
 
+use Xmf\Request;
 use XoopsModules\Myreferer\Helper;
 use XoopsModules\Myreferer\Utility;
 
 include __DIR__ . '/preloads/autoloader.php';
 
-require dirname(dirname(__DIR__)) . '/mainfile.php';
+require dirname(__DIR__, 2) . '/mainfile.php';
 require XOOPS_ROOT_PATH . '/header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
@@ -33,6 +34,7 @@ $helper->loadLanguage('main');
 
 if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof XoopsTpl)) {
     require $GLOBALS['xoops']->path('class/template.php');
+
     $xoopsTpl = new XoopsTpl();
 }
 
@@ -40,6 +42,7 @@ if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof XoopsTpl))
 $new = explode('|', $xoopsModuleConfig['tag_new']);
 if (count($new) < 2) {
     $new[0] = 7;
+
     $new[1] = 1;
 }
 $more = 'AND hide = 0 AND visit >= ' . $new[1];
@@ -51,35 +54,47 @@ if ($xoopsModuleConfig['banner']) {
     $banner = '';
 }
 
-$startart = isset($_GET['startart']) ? (int)$_GET['startart'] : 0;
-$display  = isset($_GET['display']) ? (int)$_GET['display'] : 0;
-$op       = isset($_GET['op']) ? (int)$_GET['op'] : 0;
-$ord      = $_GET['ord'] ?? $xoopsModuleConfig['order'];
-$letter   = $_GET['letter'] ?? _ALL;
+$startart = Request::getInt('startart', 0, 'GET');
+$display  = Request::getInt('display', 0, 'GET');
+$op       = Request::getInt('op', 0, 'GET');
+$ord      = Request::getString('ord', $xoopsModuleConfig['order'], 'GET');
+$letter   = Request::getString('letter', _ALL, 'GET');
 
 // Navigation links
 if ('alpha' === $ord) {
     $nav_referer = 'referer.php?ord=' . $xoopsModuleConfig['order'] . '&op=0';
-    $nav_engine  = 'referer.php?ord=' . $xoopsModuleConfig['order'] . '&op=1';
-    $nav_keyword = 'query.php?ord=' . $xoopsModuleConfig['order'] . '&op=1';
-    $nav_query   = 'query.php?ord=' . $xoopsModuleConfig['order'] . '&op=0';
-    $nav_robot   = 'spider.php?ord=' . $xoopsModuleConfig['order'];
-    $nav_users   = 'users.php?ord=' . $xoopsModuleConfig['order'];
-    $nav_page    = 'page.php?ord=' . $xoopsModuleConfig['order'];
 
-    $GLOBALS['xoopsOption']['template_main'] = 'myreferer_alpha.html';
-    $xoopsModuleConfig['perpage']            = '0';
-    $startart                                = '0';
+    $nav_engine = 'referer.php?ord=' . $xoopsModuleConfig['order'] . '&op=1';
+
+    $nav_keyword = 'query.php?ord=' . $xoopsModuleConfig['order'] . '&op=1';
+
+    $nav_query = 'query.php?ord=' . $xoopsModuleConfig['order'] . '&op=0';
+
+    $nav_robot = 'spider.php?ord=' . $xoopsModuleConfig['order'];
+
+    $nav_users = 'users.php?ord=' . $xoopsModuleConfig['order'];
+
+    $nav_page = 'page.php?ord=' . $xoopsModuleConfig['order'];
+
+    $GLOBALS['xoopsOption']['template_main'] = 'myreferer_alpha.tpl';
+
+    $xoopsModuleConfig['perpage'] = '0';
+
+    $startart = '0';
 
     //    $xoopsTpl->assign("nav_letters", 'test');
+
     $xoopsTpl->assign('nav_letters', Utility::letters($letter, $op));
+
     if (_ALL == $letter) {
         $whereletter = '';
     } elseif (_MYREFERER_OTHERS == $letter) {
         $whereletter = '';
+
         for ($i = 48; $i <= 57; $i++) {
             $whereletter .= " AND query NOT LIKE '" . chr($i) . "%'";
         }
+
         for ($i = 65; $i <= 90; $i++) {
             $whereletter .= " AND query NOT LIKE '" . chr($i) . "%'";
         }
@@ -88,17 +103,23 @@ if ('alpha' === $ord) {
     }
 } else {
     $nav_referer = 'referer.php?ord=' . $ord . '&op=0';
-    $nav_engine  = 'referer.php?ord=' . $ord . '&op=1';
+
+    $nav_engine = 'referer.php?ord=' . $ord . '&op=1';
+
     $nav_keyword = 'query.php?ord=' . $ord . '&op=1';
-    $nav_query   = 'query.php?ord=' . $ord . '&op=0';
-    $nav_robot   = 'spider.php?ord=' . $ord;
-    $nav_users   = 'users.php?ord=' . $ord;
-    $nav_page    = 'page.php?ord=' . $ord;
+
+    $nav_query = 'query.php?ord=' . $ord . '&op=0';
+
+    $nav_robot = 'spider.php?ord=' . $ord;
+
+    $nav_users = 'users.php?ord=' . $ord;
+
+    $nav_page = 'page.php?ord=' . $ord;
 
     if ('index.php' === basename($_SERVER['SCRIPT_NAME'])) {
-        $GLOBALS['xoopsOption']['template_main'] = 'myreferer_summary.html';
+        $GLOBALS['xoopsOption']['template_main'] = 'myreferer_summary.tpl';
     } else {
-        $GLOBALS['xoopsOption']['template_main'] = 'myreferer_index.html';
+        $GLOBALS['xoopsOption']['template_main'] = 'myreferer_index.tpl';
     }
 }
 

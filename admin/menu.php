@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -16,7 +16,7 @@ use XoopsModules\Myreferer\Helper;
 
 include dirname(__DIR__) . '/preloads/autoloader.php';
 
-$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirName = basename(dirname(__DIR__));
 $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 $helper = Helper::getInstance();
 $helper->loadLanguage('common');
@@ -25,6 +25,7 @@ $helper->loadLanguage('feedback');
 $pathIcon32 = Admin::menuIconPath('');
 if (is_object($helper->getModule())) {
     //    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+
     $pathModIcon32 = $helper->url($helper->getModule()->getInfo('modicons32'));
 }
 
@@ -92,34 +93,33 @@ $adminmenu[] = [
 
 $adminmenu[] = [
     'title' => _MI_MYREFERER_MENU_ABOUT,
-    'link' => 'admin/about.php',
-    'icon' => $pathIcon32 . '/about.png',
+    'link'  => 'admin/about.php',
+    'icon'  => $pathIcon32 . '/about.png',
 ];
-
 
 //-------------- headermenu -------------------//
 
-if (isset($xoopsModule)) {
-    $headermenu[] = [
-        'title' => _PREFERENCES,
-        'link'  => '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule->getVar('mid'),
-    ];
-
-    $headermenu[] = [
-        'title' => _MD_MYREFERER_INDEX,
-        'link'  => XOOPS_URL . '/modules/myreferer/',
-    ];
-
-    $headermenu[] = [
-        'title' => _MD_MYREFERER_UPDATE_MODULE,
-        'link'  => XOOPS_URL . '/modules/system/admin.php?fct=modulesadmin&op=update&module=' . $xoopsModule->getVar('dirname'),
-    ];
-
-    $headermenu[] = [
-        'title' => _MI_MYREFERER_HELP,
-        'link'  => 'help.php',
-    ];
-}
+//if (isset($xoopsModule)) {
+//    $headermenu[] = [
+//        'title' => _PREFERENCES,
+//        'link'  => '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule->getVar('mid'),
+//    ];
+//
+//    $headermenu[] = [
+//        'title' => _MD_MYREFERER_INDEX,
+//        'link'  => XOOPS_URL . '/modules/myreferer/',
+//    ];
+//
+//    $headermenu[] = [
+//        'title' => _MD_MYREFERER_UPDATE_MODULE,
+//        'link'  => XOOPS_URL . '/modules/system/admin.php?fct=modulesadmin&op=update&module=' . $xoopsModule->getVar('dirname'),
+//    ];
+//
+//    $headermenu[] = [
+//        'title' => _MI_MYREFERER_HELP,
+//        'link'  => 'help.php',
+//    ];
+//}
 
 //-------------- statmenu -------------------//
 
@@ -166,15 +166,28 @@ $statmenu[] = [
 $statmenu[] = [
     'title' => _MI_MYREFERER_BYREFERER,
     'link'  => 'admin/stats_modules_referer.php',
-
 ];
 
 //-------------- metamenu -------------------//
 $metamenu[] = [
-    ['title' => _MI_MYREFERER_DATE, 'link' => 'admin/meta.php?ord=date&meta_limit=100',],
-    ['title' => _MI_MYREFERER_NEW, 'link' => 'admin/meta.php?ord=new&meta_limit=100',],
-    ['title' => _MI_MYREFERER_TOP, 'link' => 'admin/meta.php?ord=visit&meta_limit=100',],
-    ['title' => _MI_MYREFERER_POP, 'link' => 'admin/meta.php?ord=pop&meta_limit=100',],
-    ['title' => _MI_MYREFERER_RANDOM, 'link' => 'admin/meta.php?ord=random&meta_limit=100',],
+    [
+        'title' => _MI_MYREFERER_DATE,
+        'link'  => 'admin/meta.php?ord=date&meta_limit=100'
+    ],
+    [
+        'title' => _MI_MYREFERER_NEW,
+        'link'  => 'admin/meta.php?ord=new&meta_limit=100'
+    ],
+    [
+        'title' => _MI_MYREFERER_TOP,
+        'link'  => 'admin/meta.php?ord=visit&meta_limit=100'
+    ],
+    [
+        'title' => _MI_MYREFERER_POP,
+        'link'  => 'admin/meta.php?ord=pop&meta_limit=100'
+    ],
+    [
+        'title' => _MI_MYREFERER_RANDOM,
+        'link'  => 'admin/meta.php?ord=random&meta_limit=100'
+    ],
 ];
-

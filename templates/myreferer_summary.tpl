@@ -1,6 +1,6 @@
 <div class="item">
 
-    <{include file="db:myreferer_head.html"}>
+    <{include file="db:myreferer_head.tpl"}>
 
     <{if $numrows_referer}>
     <div class="itemHead"><{$referer}>&nbsp;[<{$numrows_referer}>]</div>
@@ -274,4 +274,4 @@
 </div>
 
 
-<{include file="db:myreferer_foot.html"}>
+<{include file="db:myreferer_foot.tpl"}>

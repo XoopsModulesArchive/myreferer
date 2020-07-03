@@ -1,7 +1,7 @@
 INSERT INTO `arma_myref_config` VALUES (1, 'version', '', '1', '', 'hidden', 'hidden', 0);
 INSERT INTO `arma_myref_config` VALUES (2, 'lastraz', '', '32', '', 'hidden', 'hidden', 0);
 INSERT INTO `arma_myref_config` VALUES (3, 'count_admin', '_MYREFERER_COUNT_ADMIN', '0', '_MYREFERER_COUNT_ADMIN_DSC', 'yesno', 'int', 0);
-INSERT INTO `arma_myref_config` VALUES (4, 'module_blacklist', '_MYREFERER_MODULE_BLACKLIST', 'xoopsorgnews|xoops_redirect|user|search|notifications|viewpmsg|readpmsg|myReferer|newbb|system', '_MYREFERER_MODULE_BLACKLIST_DSC', 'textarea', 'text', 2);
+INSERT INTO `arma_myref_config` VALUES (4, 'module_blacklist', '_MYREFERER_MODULE_BLACKLIST', 'xoopsorgnews|xoops_redirect|user|search|notifications|viewpmsg|readpmsg|myreferer|newbb|system', '_MYREFERER_MODULE_BLACKLIST_DSC', 'textarea', 'text', 2);
 INSERT INTO `arma_myref_config` VALUES (5, '', '_MYREFERER_KEYWORD', '', '', 'insertBreak', 'hidden', 100);
 INSERT INTO `arma_myref_config` VALUES (6, 'keyword_min', '_MYREFERER_KEYWORD_MIN', '3', '_MYREFERER_KEYWORD_MIN_DSC', 'text', 'int', 101);
 INSERT INTO `arma_myref_config` VALUES (7, 'keyword_max', '_MYREFERER_KEYWORD_MAX', '24', '_MYREFERER_KEYWORD_MAX_DSC', 'text', 'int', 102);
@@ -16,7 +16,7 @@ INSERT INTO `arma_myref_config` VALUES (15, '', '_MYREFERER_ROBOTS', '', '', 'in
 INSERT INTO `arma_myref_config` VALUES (16, 'new_bot_smail', '_MYREFERER_NEW_BOT_SMAIL', '1', '_MYREFERER_NEW_BOT_SMAIL_DSC', 'yesno', 'int', 301);
 INSERT INTO `arma_myref_config` VALUES (17, 'new_bot_mail', '_MYREFERER_NEW_BOT_MAIL', '', '_MYREFERER_NEW_BOT_MAIL_DSC', 'text', 'text', 302);
 INSERT INTO `arma_myref_config` VALUES (18, 'robots_blacklist', '_MYREFERER_ROBOTS_BLACKLIST', 'W3C_Validator|Lynx|libwww-perl', '_MYREFERER_ROBOTS_BLACKLIST_DSC', 'textarea', 'text', 303);
-INSERT INTO `arma_myref_config` VALUES (19, 'page_prohibit', '_MYREFERER_PAGE_PROHIBIT', 'modules/myReferer/norobot.html', '_MYREFERER_PAGE_PROHIBIT_DSC', 'text', 'text', 304);
+INSERT INTO `arma_myref_config` VALUES (19, 'page_prohibit', '_MYREFERER_PAGE_PROHIBIT', 'modules/myreferer/norobot.html', '_MYREFERER_PAGE_PROHIBIT_DSC', 'text', 'text', 304);
 INSERT INTO `arma_myref_config` VALUES (20, 'robots_prohibit', '_MYREFERER_ROBOTS_PROHIBIT', '', '_MYREFERER_ROBOTS_PROHIBIT_DSC', 'textarea', 'text', 305);
 INSERT INTO `arma_myref_config` VALUES (21, '', '_MYREFERER_USERVISIT', '', '', 'insertBreak', 'hidden', 100);
 INSERT INTO `arma_myref_config` VALUES (22, 'user_visit', '_MYREFERER_USER_VISIT', '1', '_MYREFERER_USER_VISIT_DSC', 'yesno', 'int', 401);

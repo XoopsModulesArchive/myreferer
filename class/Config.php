@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Myreferer;
 
@@ -9,7 +9,7 @@ use XoopsObject;
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -27,7 +27,9 @@ require_once XOOPS_ROOT_PATH . '/kernel/object.php';
 class Config extends XoopsObject
 {
     public $db;
-    public $_groups_read = null;
+
+    public $_groups_read;
+
     // constructor
 
     /**
@@ -37,13 +39,21 @@ class Config extends XoopsObject
     public function __construct($conf_id = null)
     {
         $this->db = XoopsDatabaseFactory::getDatabaseConnection();
+
         $this->initVar('conf_id', \XOBJ_DTYPE_INT, 0, true, 5);
+
         $this->initVar('conf_name', \XOBJ_DTYPE_TXTBOX, '', true, 25);
+
         $this->initVar('conf_title', \XOBJ_DTYPE_TXTBOX, '', true, 30);
+
         $this->initVar('conf_value', \XOBJ_DTYPE_TXTAREA, '', false, 0);
+
         $this->initVar('conf_desc', \XOBJ_DTYPE_TXTBOX, '', true, 50);
+
         $this->initVar('conf_formtype', \XOBJ_DTYPE_TXTBOX, '', true, 15);
+
         $this->initVar('conf_valuetype', \XOBJ_DTYPE_TXTBOX, '', true, 10);
+
         $this->initVar('conf_order', \XOBJ_DTYPE_INT, 0, true, 5);
 
         if (!empty($conf_id)) {
@@ -62,9 +72,12 @@ class Config extends XoopsObject
      */
     public function load($conf_id)
     {
-        $sql   = 'SELECT * FROM ' . $this->db->prefix('myref_config') . ' WHERE conf_id=' . $conf_id;
+        $sql = 'SELECT * FROM ' . $this->db->prefix('myreferer_config') . ' WHERE conf_id=' . $conf_id;
+
         $myrow = $this->db->fetchArray($this->db->query($sql));
+
         $this->assignVars($myrow);
+
         if (!$myrow) {
             $this->setNew();
         }

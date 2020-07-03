@@ -1,16 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
  *            - DuGris (www.dugris.info)
  */
-require dirname(dirname(dirname(__DIR__))) . '/mainfile.php';
+require dirname(__DIR__, 3) . '/mainfile.php';
 if (!defined('XOOPS_ROOT_PATH')) {
     exit('XOOPS root path not defined');
 }
@@ -26,7 +26,12 @@ if ($confirm) {
     exit();
 }
 require_once __DIR__ . '/admin_header.php';
-xoops_confirm(['', '', 'confirm' => 1, ''], 'reset.php', _MD_MYREFERER_RESET_DATA, _MD_MYREFERER_RESET);
+xoops_confirm([
+                  '',
+                  '',
+                  'confirm' => 1,
+                  ''
+              ], 'reset.php', _MD_MYREFERER_RESET_DATA, _MD_MYREFERER_RESET);
 require_once __DIR__ . '/admin_footer.php';
 
 /**
@@ -37,11 +42,14 @@ function myreferer_reset()
     global $xoopsDB;
 
     // get table list (xoops_version.php)
+
     require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/english/modinfo.php';
+
     require_once XOOPS_ROOT_PATH . '/modules/myreferer/xoops_version.php';
 
     foreach ($modversion['tables'] as $table) {
         $sql = 'UPDATE ' . $xoopsDB->prefix($table) . ' SET visit_tmp = 0 WHERE visit_tmp !=0';
+
         $xoopsDB->queryF($sql);
     }
 

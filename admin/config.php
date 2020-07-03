@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * XOOPS - PHP Content Management System
  * Copyright (c) 2004 <https://xoops.org>
  *
- * Module: myReferer 2.0
+ * Module: myreferer 2.0
  * Licence : GPL
  * Authors :
  *           - solo (www.wolfpackclan.com/wolfactory)
@@ -48,9 +48,12 @@ switch ($op) {
         $count = count($conf_ids);
         if ($count > 0) {
             for ($i = 0; $i < $count; $i++) {
-                $config    = new Config($conf_ids[$i]);
+                $config = new Config($conf_ids[$i]);
+
                 $new_value = ${$config->getVar('conf_name')};
+
                 $config->setConfValueForInput($new_value);
+
                 if (!$configHandler->insert($config)) {
                     redirect_header(basename(__FILE__), 3, implode('<br>', $config->getErrors()));
                 }
@@ -69,7 +72,7 @@ switch ($op) {
 
         $config    = $configHandler->getAll($criteria);
         $confcount = count($config);
-        myReferer_EditConfig($config);
+        myreferer_EditConfig($config);
         break;
 }
 require_once __DIR__ . '/admin_footer.php';
@@ -77,19 +80,19 @@ require_once __DIR__ . '/admin_footer.php';
 /**
  * @param $config
  */
-function myReferer_EditConfig($config)
+function myreferer_EditConfig($config)
 {
     xoops_load('XoopsThemeForm');
+
     $form = new XoopsThemeForm(_MD_MYREFERER_CONFIG, 'pref_form', basename(__FILE__), 'post', true);
 
-    $helper        = Helper::getInstance();
+    $helper = Helper::getInstance();
+
     $configHandler = $helper->getHandler('Config');
 
     foreach ($config as $i => $configObj) {
-        $title = (!defined($config[$i]->getVar('conf_desc')) || '' == constant($config[$i]->getVar('conf_desc'))) ? constant($config[$i]->getVar('conf_title')) : constant($config[$i]->getVar('conf_title'))
-                                                                                                                                                                  . '<br><br><span style="font-weight:normal;">'
-                                                                                                                                                                  . constant($config[$i]->getVar('conf_desc'))
-                                                                                                                                                                  . '</span>';
+        $title = !defined($config[$i]->getVar('conf_desc')) || '' == constant($config[$i]->getVar('conf_desc')) ? constant($config[$i]->getVar('conf_title')) : constant($config[$i]->getVar('conf_title')) . '<br><br><span style="font-weight:normal;">'
+                                                                                                                                                                . constant($config[$i]->getVar('conf_desc')) . '</span>';
 
         switch ($config[$i]->getVar('conf_formtype')) {
             case 'insertBreak':
@@ -100,7 +103,11 @@ function myReferer_EditConfig($config)
                 $myts = \MyTextSanitizer::getInstance();
                 if ('array' === $config[$i]->getVar('conf_valuetype')) {
                     // this is exceptional.. only when value type is arrayneed a smarter way for this
-                    $ele = ('' != $config[$i]->getVar('conf_value')) ? new XoopsFormTextArea($title, $config[$i]->getVar('conf_name'), $myts->htmlSpecialChars(implode('|', $config[$i]->getConfValueForOutput())), 5, 50) : new XoopsFormTextArea($title, $config[$i]->getVar('conf_name'), '', 5, 50);
+
+                    $ele = '' != $config[$i]->getVar('conf_value') ? new XoopsFormTextArea($title, $config[$i]->getVar('conf_name'), $myts->htmlSpecialChars(implode('|', $config[$i]->getConfValueForOutput())), 5, 50) : new XoopsFormTextArea($title,
+                                                                                                                                                                                                                                                 $config[$i]->getVar('conf_name'),
+                                                                                                                                                                                                                                                 '', 5,
+                                                                                                                                                                                                                                                 50);
                 } else {
                     $ele = new XoopsFormTextArea($title, $config[$i]->getVar('conf_name'), $myts->htmlSpecialChars($config[$i]->getConfValueForOutput()), 5, 50);
                 }
@@ -109,9 +116,11 @@ function myReferer_EditConfig($config)
                 if ('save_group' === $config[$i]->getVar('conf_name')) {
                     $ele = new XoopsFormSelectGroup($title, $config[$i]->getVar('conf_name'), false, $config[$i]->getConfValueForOutput(), 5, true);
                 } else {
-                    $ele     = new XoopsFormSelect($title, $config[$i]->getVar('conf_name'), $config[$i]->getConfValueForOutput());
+                    $ele = new XoopsFormSelect($title, $config[$i]->getVar('conf_name'), $config[$i]->getConfValueForOutput());
+
                     $options = [_MYREFERER_STATS_ALL => 0];
-                    for ($j = 25; $j <= 200; $j = $j + 25) {
+
+                    for ($j = 25; $j <= 200; $j += 25) {
                         $options[_MYREFERER_STATS_TOP . ' ' . $j] = $j;
                     }
 
@@ -126,7 +135,9 @@ function myReferer_EditConfig($config)
                 $opcount = count($options);
                 for ($j = 0; $j < $opcount; $j++) {
                     $optval = defined($options[$j]->getVar('confop_value')) ? constant($options[$j]->getVar('confop_value')) : $options[$j]->getVar('confop_value');
+
                     $optkey = defined($options[$j]->getVar('confop_name')) ? constant($options[$j]->getVar('confop_name')) : $options[$j]->getVar('confop_name');
+
                     $ele->addOption($optval, $optkey);
                 }
                 break;
@@ -139,14 +150,21 @@ function myReferer_EditConfig($config)
                 $ele  = new XoopsFormText($title, $config[$i]->getVar('conf_name'), 50, 255, $myts->htmlSpecialChars($config[$i]->getConfValueForOutput()));
                 break;
         }
+
         $hidden = new XoopsFormHidden('conf_ids[]', $config[$i]->getVar('conf_id'));
+
         $form->addElement($ele);
+
         $form->addElement($hidden);
+
         unset($ele);
+
         unset($hidden);
     }
 
     $form->addElement(new XoopsFormHidden('op', 'save'));
+
     $form->addElement(new XoopsFormButton('', 'button', _GO, 'submit'));
+
     $form->display();
 }

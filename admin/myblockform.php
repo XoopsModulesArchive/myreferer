@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 // $Id: myblockform.php,v 1.8 2003/03/10 13:32:05 okazu Exp $
 //  ------------------------------------------------------------------------ //
 //                XOOPS - PHP Content Management System                      //
@@ -42,7 +43,16 @@ $side_select = new XoopsFormSelect(_AM_BLKTYPE, 'bside', $block['side']);
 /** Xoops 2.0.13
  * $side_select->addOptionArray(array(0 => _AM_SBLEFT, 1 => _AM_SBRIGHT, 3 => _AM_CBLEFT, 4 => _AM_CBRIGHT, 5 => _AM_CBCENTER, ));
  */
-$side_select->addOptionArray([0 => _AM_SBLEFT, 1 => _AM_SBRIGHT, 3 => _AM_CBLEFT, 4 => _AM_CBRIGHT, 5 => _AM_CBCENTER, 7 => _AM_CBBOTTOMLEFT, 8 => _AM_CBBOTTOMRIGHT, 9 => _AM_CBBOTTOM]);
+$side_select->addOptionArray([
+                                 0 => _AM_SBLEFT,
+                                 1 => _AM_SBRIGHT,
+                                 3 => _AM_CBLEFT,
+                                 4 => _AM_CBRIGHT,
+                                 5 => _AM_CBCENTER,
+                                 7 => _AM_CBBOTTOMLEFT,
+                                 8 => _AM_CBBOTTOMRIGHT,
+                                 9 => _AM_CBBOTTOM
+                             ]);
 
 $form->addElement($side_select);
 $form->addElement(new XoopsFormText(_AM_WEIGHT, 'bweight', 2, 5, $block['weight']));
@@ -61,38 +71,66 @@ $form->addElement(new XoopsFormText(_AM_TITLE, 'btitle', 50, 255, $block['title'
 
 if ($block['is_custom']) {
     // Custom Block's textarea
-    $notice_for_tags = '<span style="font-size:x-small;font-weight:bold;">' . _AM_USEFULTAGS . '</span><br><span style="font-size:x-small;font-weight:normal;">' . sprintf(_AM_BLOCKTAG1, '{X_SITEURL}', XOOPS_URL . '/') . '</span>';
-    $current_op      = 'clone' === @$_GET['op'] ? 'clone' : 'edit';
-    $uri_to_myself   = XOOPS_URL . "/modules/blocksadmin/admin/admin.php?fct=blocksadmin&amp;op=$current_op&amp;bid={$block['bid']}";
 
-    $myts     = \MyTextSanitizer::getInstance();
+    $notice_for_tags = '<span style="font-size:x-small;font-weight:bold;">' . _AM_USEFULTAGS . '</span><br><span style="font-size:x-small;font-weight:normal;">' . sprintf(_AM_BLOCKTAG1, '{X_SITEURL}', XOOPS_URL . '/') . '</span>';
+
+    $current_op = 'clone' === @$_GET['op'] ? 'clone' : 'edit';
+
+    $uri_to_myself = XOOPS_URL . "/modules/blocksadmin/admin/admin.php?fct=blocksadmin&amp;op=$current_op&amp;bid={$block['bid']}";
+
+    $myts = \MyTextSanitizer::getInstance();
+
     $textarea = new XoopsFormDhtmlTextArea(_AM_CONTENT, 'bcontent', $myts->htmlSpecialChars($block['content']), 15, 70);
+
     $textarea->setDescription($notice_for_tags);
 
     $form->addElement($textarea, true);
 
     $ctype_select = new XoopsFormSelect(_AM_CTYPE, 'bctype', $block['ctype']);
-    $ctype_select->addOptionArray(['H' => _AM_HTML, 'P' => _AM_PHP, 'S' => _AM_AFWSMILE, 'T' => _AM_AFNOSMILE]);
+
+    $ctype_select->addOptionArray([
+                                      'H' => _AM_HTML,
+                                      'P' => _AM_PHP,
+                                      'S' => _AM_AFWSMILE,
+                                      'T' => _AM_AFNOSMILE
+                                  ]);
+
     $form->addElement($ctype_select);
 } else {
     if ('' != $block['template'] && !defined('XOOPS_ORETEKI')) {
         $tplfileHandler = xoops_getHandler('tplfile');
-        $btemplate      = $tplfileHandler->find($GLOBALS['xoopsConfig']['template_set'], 'block', $block['bid']);
+
+        $btemplate = $tplfileHandler->find($GLOBALS['xoopsConfig']['template_set'], 'block', $block['bid']);
+
         if (count($btemplate) > 0) {
             $form->addElement(new XoopsFormLabel(_AM_CONTENT, '<a href="' . XOOPS_URL . '/modules/system/admin.php?fct=tplsets&op=edittpl&id=' . $btemplate[0]->getVar('tpl_id') . '">' . _AM_EDITTPL . '</a>'));
         } else {
             $btemplate2 = $tplfileHandler->find('default', 'block', $block['bid']);
+
             if (count($btemplate2) > 0) {
                 $form->addElement(new XoopsFormLabel(_AM_CONTENT, '<a href="' . XOOPS_URL . '/modules/system/admin.php?fct=tplsets&op=edittpl&id=' . $btemplate2[0]->getVar('tpl_id') . '" target="_blank">' . _AM_EDITTPL . '</a>'));
             }
         }
     }
+
     if (false !== $block['edit_form']) {
         $form->addElement(new XoopsFormLabel(_AM_OPTIONS, $block['edit_form']));
     }
 }
 $cache_select = new XoopsFormSelect(_AM_BCACHETIME, 'bcachetime', $block['cachetime']);
-$cache_select->addOptionArray(['0' => _NOCACHE, '30' => sprintf(_SECONDS, 30), '60' => _MINUTE, '300' => sprintf(_MINUTES, 5), '1800' => sprintf(_MINUTES, 30), '3600' => _HOUR, '18000' => sprintf(_HOURS, 5), '86400' => _DAY, '259200' => sprintf(_DAYS, 3), '604800' => _WEEK, '2592000' => _MONTH]);
+$cache_select->addOptionArray([
+                                  '0'       => _NOCACHE,
+                                  '30'      => sprintf(_SECONDS, 30),
+                                  '60'      => _MINUTE,
+                                  '300'     => sprintf(_MINUTES, 5),
+                                  '1800'    => sprintf(_MINUTES, 30),
+                                  '3600'    => _HOUR,
+                                  '18000'   => sprintf(_HOURS, 5),
+                                  '86400'   => _DAY,
+                                  '259200'  => sprintf(_DAYS, 3),
+                                  '604800'  => _WEEK,
+                                  '2592000' => _MONTH
+                              ]);
 $form->addElement($cache_select);
 if (isset($block['bid'])) {
     $form->addElement(new XoopsFormHidden('bid', $block['bid']));
@@ -114,13 +152,18 @@ $form->addElement($button_tray);
 function check_browser_can_use_spaw()
 {
     $browser = $_SERVER['HTTP_USER_AGENT'];
+
     // check if msie
+
     if (preg_match('/MSIE[^;]*/i', $browser, $msie)) {
         // get version
+
         if (preg_match("/[0-9]+\.[0-9]+/i", $msie[0], $version)) {
             // check version
+
             if ((float)$version[0] >= 5.5) {
                 // finally check if it's not opera impersonating ie
+
                 if (!preg_match('opera', $browser)) {
                     return true;
                 }

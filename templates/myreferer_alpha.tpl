@@ -1,6 +1,6 @@
 <div class="item">
 
-    <{include file="db:myreferer_head.html"}>
+    <{include file="db:myreferer_head.tpl"}>
 
     <{if $numrows}>
         <div style="padding-bottom: 12px; text-align: center;" class="itemPermaLink"><{$nav_letters}></div>
@@ -43,4 +43,4 @@
     <{/if}>
 </div>
 
-<{include file="db:myreferer_foot.html"}>
+<{include file="db:myreferer_foot.tpl"}>
