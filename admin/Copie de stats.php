@@ -1,34 +1,33 @@
 <?php
+
+declare(strict_types=1);
+
 /**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
+ * XOOPS - PHP Content Management System
+ * Copyright (c) 2004 <https://xoops.org>
+ *
+ * Module: myreferer 2.0
+ * Licence : GPL
+ * Authors :
+ *           - solo (www.wolfpackclan.com/wolfactory)
+ *            - DuGris (www.dugris.info)
+ */
+require __DIR__ . '/admin_header.php';
+require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
-include("admin_header.php");
-include_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-
-$query = "	SELECT * FROM ".$xoopsDB->prefix("myref_users_pages_stats")."
+$query = '	SELECT * FROM ' . $xoopsDB->prefix('myreferer_users_pages_stats') . "
 		WHERE $where $where_week AND query LIKE '%$search%' AND keyword = 0
 		ORDER BY $ordre $sort_ordre";
 // $counter = $xoopsDB->queryF($query);
-// $count = mysql_NumRows( $counter );
+// $count = @mysqli_num_rows( $counter );
 $result = $xoopsDB->queryF($query);
 
-
-myReferer_adminmenu(5, _MD_MYREFERER_STATS);
+// Utility::getAdminMenu(5, _MD_MYREFERER_STATS);
 OpenTable();
 echo 'Stats';
-	while ( $myrow = $xoopsDB->fetchArray($result) ) {
-         echo $myrow['usersid'];
-        }
-
+while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
+    echo $myrow['usersid'];
+}
 
 CloseTable();
-include_once( 'admin_footer.php' );
-?>
+require_once __DIR__ . '/admin_footer.php';

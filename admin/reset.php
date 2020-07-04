@@ -1,50 +1,59 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
-include "../../../mainfile.php";
-if (!defined("XOOPS_ROOT_PATH")) { die("XOOPS root path not defined"); }
+ * XOOPS - PHP Content Management System
+ * Copyright (c) 2004 <https://xoops.org>
+ *
+ * Module: myreferer 2.0
+ * Licence : GPL
+ * Authors :
+ *           - solo (www.wolfpackclan.com/wolfactory)
+ *            - DuGris (www.dugris.info)
+ */
+require dirname(__DIR__, 3) . '/mainfile.php';
+if (!defined('XOOPS_ROOT_PATH')) {
+    exit('XOOPS root path not defined');
+}
 
-        $confirm = ( isset($confirm)) ? 1 : 0;
-        if ($confirm) {
-           if ( myreferer_reset() ) {
-            redirect_header( "index.php", 1, sprintf( _MD_MYREFERER_UPDATED, '') );
-              } else {
-            redirect_header( "index.php", 1, sprintf( _MD_MYREFERER_NOTUPDATED, '') );  
-              }
+$confirm = isset($confirm) ? 1 : 0;
+if ($confirm) {
+    if (myreferer_reset()) {
+        redirect_header('index.php', 1, sprintf(_MD_MYREFERER_UPDATED, ''));
+    } else {
+        redirect_header('index.php', 1, sprintf(_MD_MYREFERER_NOTUPDATED, ''));
+    }
 
-           exit();
-		} else {
-           include_once( "admin_header.php" );
-             xoops_confirm( array( '', '', 'confirm' => 1, '' ), 'reset.php', _MD_MYREFERER_RESET_DATA, _MD_MYREFERER_RESET );
-           include_once( 'admin_footer.php' );
-        }
-
+    exit();
+}
+require_once __DIR__ . '/admin_header.php';
+xoops_confirm([
+                  '',
+                  '',
+                  'confirm' => 1,
+                  ''
+              ], 'reset.php', _MD_MYREFERER_RESET_DATA, _MD_MYREFERER_RESET);
+require_once __DIR__ . '/admin_footer.php';
 
 /**
  * Restoring visit_tmp by 0
  */
 function myreferer_reset()
 {
-    	global $xoopsDB;
+    global $xoopsDB;
 
-    	// get table list (xoops_version.php)
-        include_once( XOOPS_ROOT_PATH . '/modules/myReferer/language/english/modinfo.php' );
-        include_once( XOOPS_ROOT_PATH . '/modules/myReferer/xoops_version.php' );
+    // get table list (xoops_version.php)
 
-        foreach ( $modversion['tables'] as $table ) {
-                $sql = "UPDATE " . $xoopsDB->prefix($table) . " SET visit_tmp = 0 WHERE visit_tmp !=0";
-                $xoopsDB->queryF($sql);
-        }
-        return TRUE;
+    require_once XOOPS_ROOT_PATH . '/modules/myreferer/language/english/modinfo.php';
+
+    require_once XOOPS_ROOT_PATH . '/modules/myreferer/xoops_version.php';
+
+    foreach ($modversion['tables'] as $table) {
+        $sql = 'UPDATE ' . $xoopsDB->prefix($table) . ' SET visit_tmp = 0 WHERE visit_tmp !=0';
+
+        $xoopsDB->queryF($sql);
+    }
+
+    return true;
 }
 
-include_once( 'admin_footer.php' );
-?>
+require_once __DIR__ . '/admin_footer.php';

@@ -1,5 +1,5 @@
 {SPIDER_TODAY}
-Un nouveau robot a trouvé votre site
+Un nouveau robot a trouvï¿½ votre site
 
 Robot : {SPIDER} {SPIDER_URL}
 Page  : {SPIDER_PAGE}

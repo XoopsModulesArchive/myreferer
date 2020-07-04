@@ -1,240 +1,402 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
+ * XOOPS - PHP Content Management System
+ * Copyright (c) 2004 <https://xoops.org>
+ *
+ * Module: myreferer 2.0
+ * Licence : GPL
+ * Authors :
+ *           - solo (www.wolfpackclan.com/wolfactory)
+ *            - DuGris (www.dugris.info)
+ */
 
-$modversion['name'] = _MI_MYREF_NAME;
-$modversion['version'] = 2.0;
-$modversion['description'] = _MI_MYREF_DSC;
-$modversion['credits'] = "<a href='http://www.wolfpackclan.com/wolfactory' target='_blank'>Wolfactory</a>, <a href='http://www.dugris.info' target='_blank'>dugris</a>";
-$modversion['author'] = "Solo, DuGris";
-$modversion['help'] = "";
-$modversion['license'] = "GPL see LICENSE";
-$modversion['official'] = 0;
-$modversion['image'] = "images/myreferer_slogo.png";
-$modversion['dirname'] = "myReferer";
+use XoopsModules\Myreferer\Utility;
 
-//sql tables
-$modversion['sqlfile']['mysql'] = "sql/mysql.sql";
-$modversion['tables'][0]  = "myref_config";
-$modversion['tables'][1]  = "myref_pages";
-$modversion['tables'][2]  = "myref_pages_stats";
-$modversion['tables'][3]  = "myref_referer";
-$modversion['tables'][4]  = "myref_referer_pages";
-$modversion['tables'][5]  = "myref_referer_pages_stats";
-$modversion['tables'][6]  = "myref_referer_stats";
-$modversion['tables'][7]  = "myref_robots";
-$modversion['tables'][8]  = "myref_robots_pages";
-$modversion['tables'][9]  = "myref_robots_pages_stats";
-$modversion['tables'][10] = "myref_robots_stats";
-$modversion['tables'][11] = "myref_query";
-$modversion['tables'][12] = "myref_query_pages";
-$modversion['tables'][13] = "myref_query_pages_stats";
-$modversion['tables'][14] = "myref_query_stats";
-$modversion['tables'][15] = "myref_users";
-$modversion['tables'][16] = "myref_users_stats";
-$modversion['tables'][17] = "myref_users_pages";
-$modversion['tables'][18] = "myref_users_pages_stats";
+$moduleDirName      = basename(__DIR__);
+$moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-// Templates
-$modversion['templates'][1]['file'] = 'myreferer_head.html';
-$modversion['templates'][1]['description'] = "";
-$modversion['templates'][2]['file'] = 'myreferer_foot.html';
-$modversion['templates'][2]['description'] = "";
-$modversion['templates'][3]['file'] = 'myreferer_index.html';
-$modversion['templates'][3]['description'] = "";
-$modversion['templates'][4]['file'] = 'myreferer_summary.html';
-$modversion['templates'][4]['description'] = "";
-$modversion['templates'][5]['file'] = 'myreferer_alpha.html';
-$modversion['templates'][5]['description'] = "";
+// ------------------- Informations ------------------- //
+$modversion = [
+    'version'       => 3.01,
+    'module_status' => 'Alpha 8',
+    'release_date'  => '2020/06/28',
+    'name'          => _MI_MYREFERER_NAME,
+    'description'   => _MI_MYREFERER_DSC,
+    'official'      => 0,
+    //1 indicates official XOOPS module supported by XOOPS Dev Team, 0 means 3rd party supported
 
-//Admin
-// Admin things
-$modversion['hasAdmin'] = 1;
-$modversion['adminindex'] = "admin/index.php";
-$modversion['adminmenu'] = "admin/menu.php";
+    'author'              => 'Solo, DuGris, Mamba, Zyspec',
+    'credits'             => 'XOOPS Development Team',
+    'author_mail'         => 'author-email',
+    'author_website_url'  => 'https://xoops.org',
+    'author_website_name' => 'XOOPS',
+    'license'             => 'GPL 2.0 or later',
+    'license_url'         => 'www.gnu.org/licenses/gpl-2.0.html/',
+    // ------------------- Folders & Files -------------------
 
-//Main
-$modversion['hasMain'] = 1;
+    'release_info' => 'Changelog',
+    'release_file' => XOOPS_URL . "/modules/$moduleDirName/docs/changelog.txt",
+
+    'manual'      => 'link to manual file',
+    'manual_file' => XOOPS_URL . "/modules/$moduleDirName/docs/install.txt",
+    // images
+
+    'image'   => 'assets/images/logoModule.png',
+    'dirname' => $moduleDirName,
+    //Frameworks
+    //    'dirmoduleadmin'      => 'Frameworks/moduleclasses/moduleadmin',
+    //    'sysicons16'          => 'Frameworks/moduleclasses/icons/16',
+    //    'sysicons32'          => 'Frameworks/moduleclasses/icons/32',
+    // Local path icons
+
+    'modicons16' => 'assets/images/icons/16',
+    'modicons32' => 'assets/images/icons/32',
+    //About
+
+    'demo_site_url'       => 'https://xoops.org',
+    'demo_site_name'      => 'XOOPS Demo Site',
+    'support_url'         => 'https://xoops.org/modules/newbb/viewforum.php?forum=28/',
+    'support_name'        => 'Support Forum',
+    'submit_bug'          => 'https://github.com/XoopsModules25x/' . $moduleDirName . '/issues',
+    'module_website_url'  => 'www.xoops.org',
+    'module_website_name' => 'XOOPS Project',
+    // ------------------- Min Requirements -------------------
+
+    'min_php'   => '7.1',
+    'min_xoops' => '2.5.10',
+    'min_admin' => '1.2',
+    'min_db'    => ['mysql' => '5.5'],
+    // ------------------- Admin Menu -------------------
+
+    'system_menu' => 1,
+    'hasAdmin'    => 1,
+    'adminindex'  => 'admin/index.php',
+    'adminmenu'   => 'admin/menu.php',
+    // ------------------- Main Menu -------------------
+
+    'hasMain' => 1,
+    // ------------------- Install/Update -------------------
+
+    'onInstall' => 'include/oninstall.php',
+    'onUpdate'  => 'include/onupdate.php',
+    //  'onUninstall'         => 'include/onuninstall.php',
+    // -------------------  PayPal ---------------------------
+
+    'paypal' => [
+        'business'      => 'xoopsfoundation@gmail.com',
+        'item_name'     => 'Donation : ' . _MI_MYREFERER_NAME,
+        'amount'        => 0,
+        'currency_code' => 'USD',
+    ],
+    // ------------------- Search ---------------------------
+
+    'hasSearch' => 1,
+    'search'    => [
+        'file' => 'include/search.inc.php',
+        'func' => 'pedigree_search',
+    ],
+    // ------------------- Comments -------------------------
+
+    'hasComments' => 1,
+    'comments'    => [
+        'pageName'     => 'dog.php',
+        'itemName'     => 'id',
+        'callbackFile' => 'include/comment_functions.php',
+        'callback'     => [
+            'approve' => 'picture_comments_approve',
+            'update'  => 'picture_comments_update',
+        ],
+    ],
+    // ------------------- Mysql -----------------------------
+
+    'sqlfile' => ['mysql' => 'sql/mysql.sql'],
+    // ------------------- Tables ----------------------------
+
+    'tables' => [
+        $moduleDirName . '_' . 'config',
+        $moduleDirName . '_' . 'pages',
+        $moduleDirName . '_' . 'pages_stats',
+        $moduleDirName . '_' . 'referer',
+        $moduleDirName . '_' . 'referer_pages',
+        $moduleDirName . '_' . 'referer_pages_stats',
+        $moduleDirName . '_' . 'referer_stats',
+        $moduleDirName . '_' . 'robots',
+        $moduleDirName . '_' . 'robots_pages',
+        $moduleDirName . '_' . 'robots_pages_stats',
+        $moduleDirName . '_' . 'robots_stats',
+        $moduleDirName . '_' . 'query',
+        $moduleDirName . '_' . 'query_pages',
+        $moduleDirName . '_' . 'query_pages_stats',
+        $moduleDirName . '_' . 'query_stats',
+        $moduleDirName . '_' . 'users',
+        $moduleDirName . '_' . 'users_stats',
+        $moduleDirName . '_' . 'users_pages',
+        $moduleDirName . '_' . 'users_pages_stats',
+    ],
+];
+
+// ------------------- Templates ------------------- //
+
+$modversion['templates'][] = [
+    [
+        'file'        => 'myreferer_head.tpl',
+        'description' => ''
+    ],
+    [
+        'file'        => 'myreferer_foot.tpl',
+        'description' => ''
+    ],
+    [
+        'file'        => 'myreferer_index.tpl',
+        'description' => ''
+    ],
+    [
+        'file'        => 'myreferer_summary.tpl',
+        'description' => ''
+    ],
+    [
+        'file'        => 'myreferer_alpha.tpl',
+        'description' => ''
+    ],
+];
+
+// ------------------- Help files ------------------- //
+$modversion['help']        = 'page=help';
+$modversion['helpsection'] = [
+    [
+        'name' => _MI_MYREFERER_OVERVIEW,
+        'link' => 'page=help'
+    ],
+    [
+        'name' => _MI_MYREFERER_DISCLAIMER,
+        'link' => 'page=disclaimer'
+    ],
+    [
+        'name' => _MI_MYREFERER_LICENSE,
+        'link' => 'page=license'
+    ],
+    [
+        'name' => _MI_MYREFERER_SUPPORT,
+        'link' => 'page=support'
+    ],
+];
+
+// ------------------- Submenus ------------------- //
 global $xoopsUser, $xoopsModule, $xoopsModuleConfig;
-if ($xoopsModule && $xoopsModule -> getVar( 'dirname' ) == 'myReferer') {
-	$subcount = 1 ;
-	if ( myReferer_checkRight(1) ){
-		$modversion['sub'][$subcount]['name'] = _MI_MYREF_REFERER;
-		$modversion['sub'][$subcount]['url'] = "referer.php?op=0" ;
-		$subcount++ ;
-	}
-	if ( myReferer_checkRight(2) ){
-		$modversion['sub'][$subcount]['name'] = _MI_MYREF_ENGINE;
-		$modversion['sub'][$subcount]['url'] = "referer.php?op=1" ;
-		$subcount++ ;
-	}
-	if ( myReferer_checkRight(3) ){
-		$modversion['sub'][$subcount]['name'] = _MI_MYREF_KEYWORDS;
-		$modversion['sub'][$subcount]['url'] = "query.php" ;
-		$subcount++ ;
-	}
-	if ( myReferer_checkRight(4) ){
-		$modversion['sub'][$subcount]['name'] = _MI_MYREF_QUERY;
-		$modversion['sub'][$subcount]['url'] = "query.php" ;
-		$subcount++ ;
-	}
-	if ( myReferer_checkRight(5) ){
-		$modversion['sub'][$subcount]['name'] = _MI_MYREF_ROBOTS;
-		$modversion['sub'][$subcount]['url'] = "spider.php" ;
-		$subcount++ ;
-	}
+if ($xoopsModule && 'myreferer' === $xoopsModule->getVar('dirname')) {
+    $subcount = 1;
 
-	$modversion['sub'][$subcount]['name'] = _MI_MYREF_ALPHA;
-	$modversion['sub'][$subcount]['url'] = "query.php?ord=alpha" ;
-	$subcount++ ;
+    if (Utility::checkRight(1)) {
+        $modversion['sub'][$subcount]['name'] = _MI_MYREFERER_REFERER;
+
+        $modversion['sub'][$subcount]['url'] = 'referer.php?op=0';
+
+        $subcount++;
+    }
+
+    if (Utility::checkRight(2)) {
+        $modversion['sub'][$subcount]['name'] = _MI_MYREFERER_ENGINE;
+
+        $modversion['sub'][$subcount]['url'] = 'referer.php?op=1';
+
+        $subcount++;
+    }
+
+    if (Utility::checkRight(3)) {
+        $modversion['sub'][$subcount]['name'] = _MI_MYREFERER_KEYWORDS;
+
+        $modversion['sub'][$subcount]['url'] = 'query.php';
+
+        $subcount++;
+    }
+
+    if (Utility::checkRight(4)) {
+        $modversion['sub'][$subcount]['name'] = _MI_MYREFERER_QUERY;
+
+        $modversion['sub'][$subcount]['url'] = 'query.php';
+
+        $subcount++;
+    }
+
+    if (Utility::checkRight(5)) {
+        $modversion['sub'][$subcount]['name'] = _MI_MYREFERER_ROBOTS;
+
+        $modversion['sub'][$subcount]['url'] = 'spider.php';
+
+        $subcount++;
+    }
+
+    $modversion['sub'][$subcount]['name'] = _MI_MYREFERER_ALPHA;
+
+    $modversion['sub'][$subcount]['url'] = 'query.php?ord=alpha';
+
+    $subcount++;
 }
 
+// ------------------- Blocks ------------------- //
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_ALLINFO,
+    'description' => '',
+    'show_func'   => 'a_myrefererAll_show',
+    'edit_func'   => 'a_myrefererAll_edit',
+    'options'     => '1,2,3,4,5,6|new|3|10|0',
+    'template'    => 'myreferer_block_01.tpl',
+];
 
-// Blocks
-$i=1;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_ALLINFO;
-$modversion['blocks'][$i]['description'] = "";
-$modversion['blocks'][$i]['show_func'] = 'a_myrefererAll_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myrefererAll_edit';
-$modversion['blocks'][$i]['options'] = '1,2,3,4,5,6|new|3|10|0';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_01.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_REFERER,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'referer|new|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_REFERER;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'referer|new|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_ENGINE,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'engine|new|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_ENGINE;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'engine|new|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_KEYWORD,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'keyword|new|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_KEYWORD;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'keyword|new|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_QUERY,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'query|new|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_QUERY;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'query|new|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_ROBOTS,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'robots|new|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_ROBOTS;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'robots|new|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_PAGES,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'pages|new|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_PAGES;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'pages|new|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+$modversion['blocks'][] = [
+    'file'        => 'block.php',
+    'name'        => _MI_MYREFERER_BLOC_USERS,
+    'description' => '',
+    'show_func'   => 'a_myreferer_show',
+    'edit_func'   => 'a_myreferer_edit',
+    'options'     => 'users|date DESC|3|10|20',
+    'template'    => 'myreferer_block_02.tpl',
+];
 
-$i++;
-$modversion['blocks'][$i]['file'] = "block.php";
-$modversion['blocks'][$i]['name'] = _MI_MYREF_BLOC_USERS;
-$modversion['blocks'][$i]['description'] ="";
-$modversion['blocks'][$i]['show_func'] = 'a_myreferer_show';
-$modversion['blocks'][$i]['edit_func'] = 'a_myreferer_edit';
-$modversion['blocks'][$i]['options'] = 'users|date DESC|3|10|20';
-$modversion['blocks'][$i]['template'] = 'myreferer_block_02.html';
+// ------------------- Config Options ------------------- //
+$modversion['config'][] = [
+    'name'        => 'banner',
+    'title'       => '_MI_MYREFERER_BANNER',
+    'description' => '_MI_MYREFERER_BANNER_DSC',
+    'formtype'    => 'yesno',
+    'valuetype'   => 'int',
+    'default'     => '1',
+];
 
-// Options
-$i=1;
-$modversion['config'][1]['name'] = 'banner';
-$modversion['config'][1]['title'] = '_MI_MYREF_BANNER';
-$modversion['config'][1]['description'] = '_MI_MYREF_BANNER_DSC';
-$modversion['config'][1]['formtype'] = 'yesno';
-$modversion['config'][1]['valuetype'] = 'int';
-$modversion['config'][1]['default'] = '1';
+$modversion['config'][] = [
+    'name'        => 'text',
+    'title'       => '_MI_MYREFERER_TEXT',
+    'description' => '_MI_MYREFERER_TEXT_DSC',
+    'formtype'    => 'textarea',
+    'valuetype'   => 'text',
+    'default'     => _MI_MYREFERER_WELCOME,
+];
 
-$i++;
-$modversion['config'][$i]['name'] = 'text';
-$modversion['config'][$i]['title'] = '_MI_MYREF_TEXT';
-$modversion['config'][$i]['description'] = '_MI_MYREF_TEXT_DSC';
-$modversion['config'][$i]['formtype'] = 'textarea';
-$modversion['config'][$i]['valuetype'] = 'text';
-$modversion['config'][$i]['default'] = _MI_MYREF_WELCOME;
+$modversion['config'][] = [
+    'name'        => 'order',
+    'title'       => '_MI_MYREFERER_ORDER',
+    'description' => '_MI_MYREFERER_ORDER_DSC',
+    'formtype'    => 'select',
+    'valuetype'   => 'text',
+    'default'     => 'visit',
+    'options'     => [
+        '_MI_MYREFERER_ORDER_VISIT' => 'visit',
+        '_MI_MYREFERER_ORDER_REF'   => 'referer',
+        '_MI_MYREFERER_ORDER_DATE'  => 'date'
+    ],
+];
 
-$i++;
-$modversion['config'][$i]['name'] = 'order';
-$modversion['config'][$i]['title'] = '_MI_MYREF_ORDER';
-$modversion['config'][$i]['description'] = '_MI_MYREF_ORDER_DSC';
-$modversion['config'][$i]['formtype'] = 'select';
-$modversion['config'][$i]['valuetype'] = 'text';
-$modversion['config'][$i]['default'] = 'visit';
-$modversion['config'][$i]['options'] = array( '_MI_MYREF_ORDER_VISIT' => 'visit', '_MI_MYREF_ORDER_REF' => 'referer', '_MI_MYREF_ORDER_DATE' => 'date' );
+$modversion['config'][] = [
+    'name'        => 'perpage',
+    'title'       => '_MI_MYREFERER_PERPAGE',
+    'description' => '_MI_MYREFERER_PERPAGE_DSC',
+    'formtype'    => 'select',
+    'valuetype'   => 'int',
+    'default'     => 30,
+    'options'     => [
+        '10'  => 10,
+        '20'  => 20,
+        '30'  => 30,
+        '40'  => 40,
+        '50'  => 50,
+        '100' => 100
+    ],
+];
 
-$i++;
-$modversion['config'][$i]['name'] = 'perpage';
-$modversion['config'][$i]['title'] = '_MI_MYREF_PERPAGE';
-$modversion['config'][$i]['description'] = '_MI_MYREF_PERPAGE_DSC';
-$modversion['config'][$i]['formtype'] = 'select';
-$modversion['config'][$i]['valuetype'] = 'int';
-$modversion['config'][$i]['default'] = 30;
-$modversion['config'][$i]['options'] = array( '10' => 10, '20' => 20, '30' => 30, '40' => 40, '50' => 50, '100' => 100  );
+$modversion['config'][] = [
+    'name'        => 'tag_new',
+    'title'       => '_MI_MYREFERER_TAG_NEW',
+    'description' => '_MI_MYREFERER_TAG_NEW_DSC',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'text',
+    'default'     => '7|1',
+];
 
-$i++;
-$modversion['config'][$i]['name'] = 'tag_new';
-$modversion['config'][$i]['title'] = '_MI_MYREF_TAG_NEW';
-$modversion['config'][$i]['description'] = '_MI_MYREF_TAG_NEW_DSC';
-$modversion['config'][$i]['formtype'] = 'textbox';
-$modversion['config'][$i]['valuetype'] = 'text';
-$modversion['config'][$i]['default'] = '7|1';
+$modversion['config'][] = [
+    'name'        => 'tag_pop',
+    'title'       => '_MI_MYREFERER_TAG_POP',
+    'description' => '_MI_MYREFERER_TAG_POP_DSC',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'int',
+    'default'     => '50',
+];
 
-$i++;
-$modversion['config'][$i]['name'] = 'tag_pop';
-$modversion['config'][$i]['title'] = '_MI_MYREF_TAG_POP';
-$modversion['config'][$i]['description'] = '_MI_MYREF_TAG_POP_DSC';
-$modversion['config'][$i]['formtype'] = 'textbox';
-$modversion['config'][$i]['valuetype'] = 'int';
-$modversion['config'][$i]['default'] = '50';
+$modversion['config'][] = [
+    'name'        => 'today',
+    'title'       => '_MI_MYREFERER_TODAY',
+    'description' => '_MI_MYREFERER_TODAY',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'text',
+    'default'     => '#AAAA00',
+];
 
-$i++;
-$modversion['config'][$i]['name'] = 'today';
-$modversion['config'][$i]['title'] = '_MI_MYREF_TODAY';
-$modversion['config'][$i]['description'] = '_MI_MYREF_TODAY';
-$modversion['config'][$i]['formtype'] = 'textbox';
-$modversion['config'][$i]['valuetype'] = 'text';
-$modversion['config'][$i]['default'] = '#AAAA00';
-
-$i++;
-$modversion['config'][$i]['name'] = 'toold';
-$modversion['config'][$i]['title'] = '_MI_MYREF_TOOLD';
-$modversion['config'][$i]['description'] = '_MI_MYREF_TOOLD';
-$modversion['config'][$i]['formtype'] = 'textbox';
-$modversion['config'][$i]['valuetype'] = 'text';
-$modversion['config'][$i]['default'] = '#AA0000';
-?>
+$modversion['config'][] = [
+    'name'        => 'toold',
+    'title'       => '_MI_MYREFERER_TOOLD',
+    'description' => '_MI_MYREFERER_TOOLD',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'text',
+    'default'     => '#AA0000',
+];

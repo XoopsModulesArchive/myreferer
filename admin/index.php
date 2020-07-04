@@ -1,292 +1,127 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 /**
-* XOOPS - PHP Content Management System
-* Copyright (c) 2004 <http://www.xoops.org/>
-*
-* Module: myReferer 2.0
-* Licence : GPL
-* Authors :
-*           - solo (www.wolfpackclan.com/wolfactory)
-*			- DuGris (www.dugris.info)
-*/
+ * @copyright    XOOPS Project https://xoops.org/
+ * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @author       XOOPS Development Team
+ */
 
-include("admin_header.php");
-include_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+use Xmf\Module\Admin;
+use Xmf\Request;
+use Xmf\Yaml;
+use XoopsModules\Myreferer\Common;
 
-// Pages
-// Pagestotal
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_pages") );
-list( $pages_total ) = $xoopsDB->fetchRow($result);
+require __DIR__ . '/admin_header.php';
+// Display Admin header
+xoops_cp_header();
+$adminObject = Admin::getInstance();
 
-// Pagesonline
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_pages")." WHERE hide = 0");
-list( $pages_on ) = $xoopsDB->fetchRow($result);
+$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-// Pagesoffline
-$pages_off = abs($pages_total - $pages_on);
+//check or upload folders
+$configurator = new Common\Configurator();
+//foreach (array_keys($configurator->uploadFolders) as $i) {
+//    $utility::createFolder($configurator->uploadFolders[$i]);
+//    $adminObject->addConfigBoxLine($configurator->uploadFolders[$i], 'folder');
+//}
 
-// Keywords
-// Keywordstotal
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 1");
-list( $keywords_total ) = $xoopsDB->fetchRow($result);
+$adminObject->displayNavigation(basename(__FILE__));
 
-// Keywordsonline
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 1 AND hide = 0");
-list( $keywords_on ) = $xoopsDB->fetchRow($result);
+//check for latest release
+//$newRelease = $utility->checkVerModule($helper);
+//if (!empty($newRelease)) {
+//    $adminObject->addItemButton($newRelease[0], $newRelease[1], 'download', 'style="color : Red"');
+//}
 
-// Keywordsoffline
-$keywords_off = abs($keywords_total - $keywords_on);
+//------------- Test Data ----------------------------
 
-// Queries
-// Query total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 0");
-list( $query_total ) = $xoopsDB->fetchRow($result);
+if ($helper->getConfig('displaySampleButton')) {
+    $yamlFile = dirname(__DIR__) . '/config/admin.yml';
 
-// Query online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 0 AND hide = 0");
-list( $query_on ) = $xoopsDB->fetchRow($result);
+    $config = loadAdminConfig($yamlFile);
 
-// Query offline
-$query_off = abs($query_total - $query_on);
+    $displaySampleButton = $config['displaySampleButton'];
 
-// Bots
-// Bots total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_robots")." WHERE robots != ''");
-list( $robots_total ) = $xoopsDB->fetchRow($result);
+    if (1 == $displaySampleButton) {
+        xoops_loadLanguage('admin/modulesadmin', 'system');
 
-// Bots online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_robots")." WHERE robots != '' AND hide = 0");
-list( $robots_on ) = $xoopsDB->fetchRow($result);
+        require_once dirname(__DIR__) . '/testdata/index.php';
 
-// Bots offline
-$robots_off = abs($robots_total - $robots_on);
+        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA'), '__DIR__ . /../../testdata/index.php?op=load', 'add');
 
-// Référent
-// Référent total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 0");
-list( $referer_total ) = $xoopsDB->fetchRow($result);
+        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA'), '__DIR__ . /../../testdata/index.php?op=save', 'add');
 
-// Référent online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 0 AND hide = 0");
-list( $referer_on ) = $xoopsDB->fetchRow($result);
+        //    $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA'), '__DIR__ . /../../testdata/index.php?op=exportschema', 'add');
 
-// Référent offline
-$referer_off = abs($referer_total - $referer_on);
+        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'HIDE_SAMPLEDATA_BUTTONS'), '?op=hide_buttons', 'delete');
+    } else {
+        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SHOW_SAMPLEDATA_BUTTONS'), '?op=show_buttons', 'add');
 
-// Search engine
-// Search engine total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 1");
-list( $engine_total ) = $xoopsDB->fetchRow($result);
+        $displaySampleButton = $config['displaySampleButton'];
+    }
 
-// Référent online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 1 AND hide = 0");
-list( $engine_on ) = $xoopsDB->fetchRow($result);
+    $adminObject->displayButton('left', '');
+}
 
-// Référent offline
-$engine_off = abs($engine_total - $engine_on);
+//------------- End Test Data ----------------------------
 
-// Members
-// Memberstotal
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_users") ." WHERE user!=0");
-list( $members_total ) = $xoopsDB->fetchRow($result);
+$adminObject->displayIndex();
 
-// Membersonline
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_users")." WHERE user!=0 and hide = 0");
-list( $members_on ) = $xoopsDB->fetchRow($result);
+/**
+ * @param $yamlFile
+ * @return array|bool
+ */
+function loadAdminConfig($yamlFile)
+{
+    return Yaml::readWrapped($yamlFile);
+}
 
-// Membersoffline
-$members_off = abs($members_total - $members_on);
+/**
+ * @param $yamlFile
+ */
+function hideButtons($yamlFile)
+{
+    $app['displaySampleButton'] = 0;
 
-myReferer_adminmenu(0, _MD_MYREFERER_STATS);
-//include_once ("../include/nav.php");
-myReferer_statmenu(-1, '');
-OpenTable();
-//include_once ("../include/statnav.php");
+    Yaml::save($app, $yamlFile);
 
-// Spiders
-echo '<div style="align:center;"><table width="600px" cellpadding="4" cellspacing="1" class="bg2">
-	 <tr class="bg3">
-      <th width="10%" align="center"> '._MD_MYREFERER_TOTAL.'</th>
-      <th width="10%" align="center"> <a href="stats_pages.php?week=0">			'._MD_MYREFERER_PAGE.'</a></th>
-      <th width="10%" align="center"> <a href="stats_keyword.php?week=0">			'._MD_MYREFERER_KEYWORDS.'</a></th>
-      <th width="10%" align="center"> <a href="stats_query.php?week=0">			'._MD_MYREFERER_QUERY.'</a></th>
-      <th width="10%" align="center"> <a href="stats_robots.php?week=0">			'._MD_MYREFERER_ROBOTS.'</a></th>
-      <th width="10%" align="center"> <a href="stats_referer.php?engine=0&week=0">	'._MD_MYREFERER_REFERER.'</a></th>
-      <th width="10%" align="center"> <a href="stats_referer.php?engine=1&week=0">	'._MD_MYREFERER_ENGINES.'</a></th>
-      <th width="10%" align="center"> <a href="stats_visitors.php?week=0">			'._MD_MYREFERER_MEMBERS.'</a></th>
-      </tr>
-      <tr class="bg4">
-      <td align="center">	<img src="../images/icon/on.gif" alt="'._MD_MYREFERER_VISIBLE.'" />	</td>
-      <td align="right"> <a href="stats_pages.php?op=whitelist&week=0">			'.$pages_on.'	</a></td>
-      <td align="right"> <a href="stats_keyword.php?op=whitelist&week=0">			'.$keywords_on.'	</a></td>
-      <td align="right"> <a href="stats_query.php?op=whitelist&week=0">			'.$query_on.'	</a></td>
-      <td align="right"> <a href="stats_robots.php?op=whitelist&week=0">			'.$robots_on.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=0&op=whitelist&week=0">	'.$referer_on.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=1&op=whitelist&week=0">	'.$engine_on.'	</a></td>
-      <td align="right"> <a href="stats_visitors.php?op=whitelist&week=0">			'.$members_on.'	</a></td>
-      </tr>
-      <tr class="bg4">
-      <td align="center">	<img src="../images/icon/off.gif" alt="'._MD_MYREFERER_INVISIBLE.'" />	</td>
-      <td align="right"> <a href="stats_pages.php?op=blacklist&week=0">			'.$pages_off.'	</a></td>
-      <td align="right"> <a href="stats_keyword.php?op=blacklist&week=0">			'.$keywords_off.'	</a></td>
-      <td align="right"> <a href="stats_query.php?op=blacklist&week=0">			'.$query_off.'	</a></td>
-      <td align="right"> <a href="stats_robots.php?op=blacklist&week=0">			'.$robots_off.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=0&op=blacklist&week=0">	'.$referer_off.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=1&op=blacklist&week=0">	'.$engine_off.'	</a></td>
-      <td align="right"> <a href="stats_visitors.php?op=blacklist&week=0">			'.$members_off.'	</a></td>
-      </tr>
-      <tr class="bg4">
-      <td align="center"><b>'._MD_MYREFERER_TOTAL.'</b></td>
-      <td align="right"><b>'.$pages_total.'	</b></td>
-      <td align="right"><b>'.$keywords_total.'	</b></td>
-      <td align="right"><b>'.$query_total.'	</b></td>
-      <td align="right"><b>'.$robots_total.'	</b></td>
-      <td align="right"><b>'.$referer_total.'</b></td>
-      <td align="right"><b>'.$engine_total.'	</b></td>
-      <td align="right"><b>'.$members_total.'	</b></td>
-      </tr>
-      </table>';
+    redirect_header('index.php', 0, '');
+}
 
-// CloseTable();
+/**
+ * @param $yamlFile
+ */
+function showButtons($yamlFile)
+{
+    $app['displaySampleButton'] = 1;
 
-echo '<p />';
+    Yaml::save($app, $yamlFile);
 
-// Pages
-// Pagestotal
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_pages") . " WHERE visit_tmp > 0" );
-list( $pages_total ) = $xoopsDB->fetchRow($result);
+    redirect_header('index.php', 0, '');
+}
 
-// Pagesonline
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_pages")." WHERE hide = 0 AND visit_tmp > 0 ");
-list( $pages_on ) = $xoopsDB->fetchRow($result);
+$op = Request::getString('op', 0, 'GET');
 
-// Pagesoffline
-$pages_off = abs($pages_total - $pages_on);
+switch ($op) {
+    case 'hide_buttons':
+        hideButtons($yamlFile);
+        break;
+    case 'show_buttons':
+        showButtons($yamlFile);
+        break;
+}
 
-// Keywords
-// Keywords total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 1 AND visit_tmp > 0 ");
-list( $keywords_total ) = $xoopsDB->fetchRow($result);
+echo $utility::getServerStats();
 
-// Keywords online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 1 AND hide = 0 AND visit_tmp > 0 ");
-list( $keywords_on ) = $xoopsDB->fetchRow($result);
-
-// Keywords offline
-$keywords_off = abs($keywords_total - $keywords_on);
-
-
-// Queries
-// Query total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 0 AND visit_tmp > 0 ");
-list( $query_total ) = $xoopsDB->fetchRow($result);
-
-// Query online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_query")." WHERE keyword = 0 AND hide = 0 AND visit_tmp > 0 ");
-list( $query_on ) = $xoopsDB->fetchRow($result);
-
-// Query offline
-$query_off = abs($query_total - $query_on);
-
-// Bots
-// Bots total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_robots")." WHERE robots != '' AND visit_tmp > 0 ");
-list( $robots_total ) = $xoopsDB->fetchRow($result);
-
-// Bots online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_robots")." WHERE robots != '' AND hide = 0 AND visit_tmp > 0 ");
-list( $robots_on ) = $xoopsDB->fetchRow($result);
-
-// Bots offline
-$robots_off = abs($robots_total - $robots_on);
-
-// Référent
-// Référent total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 0 AND visit_tmp > 0 ");
-list( $referer_total ) = $xoopsDB->fetchRow($result);
-
-// Référent online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 0 AND hide = 0 AND visit_tmp > 0 ");
-list( $referer_on ) = $xoopsDB->fetchRow($result);
-
-// Référent offline
-$referer_off = abs($referer_total - $referer_on);
-
-// Search engine
-// Search engine total
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 1 AND visit_tmp > 0 ");
-list( $engine_total ) = $xoopsDB->fetchRow($result);
-
-// Référent online
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_referer")." WHERE referer != '' AND engine = 1 AND hide = 0 AND visit_tmp > 0 ");
-list( $engine_on ) = $xoopsDB->fetchRow($result);
-
-// Référent offline
-$engine_off = abs($engine_total - $engine_on);
-
-// Members
-// Memberstotal
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_users") ." WHERE user!=0 AND visit_tmp > 0");
-list( $members_total ) = $xoopsDB->fetchRow($result);
-
-// Membersonline
-$result = $xoopsDB -> queryF( "SELECT COUNT(id) FROM " . $xoopsDB->prefix("myref_users")." WHERE user!=0 and hide = 0 AND visit_tmp > 0");
-list( $members_on ) = $xoopsDB->fetchRow($result);
-
-// Membersoffline
-$members_off = abs($members_total - $members_on);
-
-// include_once ("../include/nav.php");
-
-// OpenTable();
-// include_once ("../include/statnav.php");
-// Spiders
-echo '<table width="600px" cellpadding="4" cellspacing="1" class="bg2" >
-	  <tr class="bg3">
-      <th width="10%" align="center"> '._MD_MYREFERER_WEEK.'</th>
-      <th width="10%" align="center"> <a href="stats_pages.php?week=1">	'._MD_MYREFERER_PAGE.'</a></th>
-      <th width="10%" align="center"> <a href="stats_keyword.php?week=1">	'._MD_MYREFERER_KEYWORDS.'</a></th>
-      <th width="10%" align="center"> <a href="stats_query.php?week=1">	'._MD_MYREFERER_QUERY.'</a></th>
-      <th width="10%" align="center"> <a href="stats_robots.php?week=1">	'._MD_MYREFERER_ROBOTS.'</a></th>
-      <th width="10%" align="center"> <a href="stats_referer.php?week=1&engine=0">	'._MD_MYREFERER_REFERER.'</a></th>
-      <th width="10%" align="center"> <a href="stats_referer.php?week=1&engine=1">	'._MD_MYREFERER_ENGINES.'</a></th>
-      <th width="10%" align="center"> <a href="stats_visitors.php?week=1">	'._MD_MYREFERER_MEMBERS.'</a></th>
-      </tr>
-      <tr class="bg4">
-      <td align="center">	<img src="../images/icon/on.gif" alt="'._MD_MYREFERER_VISIBLE.'" />	</td>
-      <td align="right"> <a href="stats_pages.php?op=whitelist&week=1">		'.$pages_on.'	</a></td>
-      <td align="right"> <a href="stats_keyword.php?op=whitelist&week=1">		'.$keywords_on.'	</a></td>
-      <td align="right"> <a href="stats_query.php?op=whitelist&week=1">			'.$query_on.'	</a></td>
-      <td align="right"> <a href="stats_robots.php?op=whitelist&week=1">		'.$robots_on.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=0&op=whitelist&week=1">	'.$referer_on.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=1&op=whitelist&week=1">	'.$engine_on.'	</a></td>
-      <td align="right"> <a href="stats_visitors.php?op=whitelist&week=1">	'.$members_on.'	</a></td>
-      </tr>
-      <tr class="bg4">
-      <td align="center">	<img src="../images/icon/off.gif" alt="'._MD_MYREFERER_INVISIBLE.'" />	</td>
-      <td align="right"> <a href="stats_pages.php?op=blacklist&week=1">		'.$pages_off.'	</a></td>
-      <td align="right"> <a href="stats_keyword.php?op=blacklist&week=1">		'.$keywords_off.'	</a></td>
-      <td align="right"> <a href="stats_query.php?op=blacklist&week=1">			'.$query_off.'	</a></td>
-      <td align="right"> <a href="stats_robots.php?op=blacklist&week=1">		'.$robots_off.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=0&op=blacklist&week=1">	'.$referer_off.'	</a></td>
-      <td align="right"> <a href="stats_referer.php?engine=1&op=blacklist&week=1">	'.$engine_off.'	</a></td>
-      <td align="right"> <a href="stats_visitors.php?op=blacklist&week=1">	'.$members_off.'	</a></td>
-      </tr>
-      <tr class="bg4">
-      <td align="center"><b>'._MD_MYREFERER_TOTAL.'</b></td>
-      <td align="right"><b>'.$pages_total.'</b>	</td>
-      <td align="right"><b>'.$keywords_total.'</b>	</td>
-      <td align="right"><b>'.$query_total.'</b>		</td>
-      <td align="right"><b>'.$robots_total.'</b>	</td>
-      <td align="right"><b>'.$referer_total.'</b>	</td>
-      <td align="right"><b>'.$engine_total.'</b>	</td>
-      <td align="right"><b>'.$members_total.'</b>	</td>
-      </tr>
-      </table>
-      <p />
-      <a href="reset.php">'._MD_MYREFERER_RESET_DATAS.'</a>
-      </div>';
-
-CloseTable();
-include_once( 'admin_footer.php' );
-?>
+require __DIR__ . '/admin_footer.php';
